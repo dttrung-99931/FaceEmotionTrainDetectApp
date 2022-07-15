@@ -1,0 +1,68 @@
+{
+  "project_info": {
+    "project_number": "600480733824",
+    "project_id": "eyetracking-c1706",
+    "storage_bucket": "eyetracking-c1706.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:600480733824:android:081866a4b1bb399b13e465",
+        "android_client_info": {
+          "package_name": "com.gonosen.face_form_detect"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "600480733824-ascafkq8asigfi181fk5nno99rgme0ls.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCqzpAGnYpsz57TieY8J63ZkqpY1sLEYZE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "600480733824-ascafkq8asigfi181fk5nno99rgme0ls.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:600480733824:android:cec94a65ce58c64d13e465",
+        "android_client_info": {
+          "package_name": "com.mcicek.firebase_face_tracking"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "600480733824-ascafkq8asigfi181fk5nno99rgme0ls.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCqzpAGnYpsz57TieY8J63ZkqpY1sLEYZE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "600480733824-ascafkq8asigfi181fk5nno99rgme0ls.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
