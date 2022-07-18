@@ -78,6 +78,16 @@ class FaceDetectPainter extends CustomPainter {
     _drawContour(face, canvas, FaceContourType.rightEye);
     _drawContour(face, canvas, FaceContourType.lowerLipBottom);
     _drawContour(face, canvas, FaceContourType.lowerLipTop);
+    _drawContour(face, canvas, FaceContourType.upperLipTop);
+    _drawContour(face, canvas, FaceContourType.upperLipBottom);
+    _drawContour(face, canvas, FaceContourType.upperLipBottom);
+    _drawContour(face, canvas, FaceContourType.noseBridge);
+    _drawContour(face, canvas, FaceContourType.noseBottom);
+
+    _drawContour(face, canvas, FaceContourType.leftEyebrowTop);
+    _drawContour(face, canvas, FaceContourType.leftEyebrowBottom);
+    _drawContour(face, canvas, FaceContourType.rightEyebrowTop);
+    _drawContour(face, canvas, FaceContourType.rightEyebrowBottom);
   }
 
   void _drawContour(Face face, Canvas canvas, FaceContourType contourType) {
