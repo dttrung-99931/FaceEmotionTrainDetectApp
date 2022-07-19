@@ -13,7 +13,7 @@ import 'package:rxdart/rxdart.dart';
 class FaceDetect {
   static final FaceDetector _faceDetector = FaceDetector(
       options: FaceDetectorOptions(
-    enableClassification: false,
+    enableClassification: true,
     enableLandmarks: true,
     enableContours: true,
     // enableTracking: true,
@@ -42,7 +42,7 @@ class FaceDetect {
   static void startDetecting(Stream<CameraImage> imgStream, CameraDescription camDescription) {
     _streamSubscription = imgStream.listen((image) async {
       if (_isDetectingImage || !_isNextValidTimeDetect()) return;
-
+      _isDetectingImage = true;
       _lastDetectTime = DateTime.now();
 
       InputImage inputImage = InputImage.fromBytes(

@@ -31,6 +31,10 @@ class FaceDetectPainter extends CustomPainter {
       _drawFaceBox(face, canvas);
       // _drawLandmarks(face, canvas);
       _drawContours(face, canvas);
+      _drawHeadInfo(face, canvas);
+
+      log(_getFaceAngleInfo(face));
+      _drawHeadInfo(face, canvas);
     }
   }
 
@@ -98,4 +102,52 @@ class FaceDetectPainter extends CustomPainter {
       }
     }
   }
+
+  void _drawHeadInfo(Face face, Canvas canvas) {
+    _drawText(
+      face: face,
+      canvas: canvas,
+      text: 'xyz angles:  ${_getFaceAngleInfo(face)}',
+      position: const Offset(8, 8),
+    );
+    _drawText(
+      face: face,
+      canvas: canvas,
+      text: 'Smile:  ${((face.smilingProbability ?? 0) * 100).toStringAsFixed(0)}%',
+      position: const Offset(8, 24),
+    );
+    _drawText(
+      face: face,
+      canvas: canvas,
+      text: 'Left eye open:  ${((face.leftEyeOpenProbability ?? 0) * 100).toStringAsFixed(0)}%',
+      position: const Offset(8, 40),
+    );
+    _drawText(
+      face: face,
+      canvas: canvas,
+      text: 'Right eye open:  ${((face.smilingProbability ?? 0) * 100).toStringAsFixed(0)}%',
+      position: const Offset(8, 56),
+    );
+  }
+
+  void _drawText({
+    required Face face,
+    required Canvas canvas,
+    required String text,
+    required Offset position,
+  }) {
+    TextSpan span = TextSpan(
+      style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+      text: text,
+    );
+    TextPainter tp = TextPainter(
+      text: span,
+      textDirection: TextDirection.ltr,
+    );
+    tp.layout();
+    tp.paint(canvas, position);
+  }
+
+  String _getFaceAngleInfo(Face face) =>
+      '${face.headEulerAngleX?.toStringAsFixed(2)}  |  ${face.headEulerAngleY?.toStringAsFixed(2)}  |  ${face.headEulerAngleZ?.toStringAsFixed(2)}';
 }
