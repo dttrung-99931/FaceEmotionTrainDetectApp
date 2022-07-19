@@ -20,25 +20,29 @@ class Camera {
   static InputImageRotation get imageRotation =>
       InputImageRotationValue.fromRawValue(_camController.description.sensorOrientation)!;
 
+  static final _isPausedStream = PublishSubject<bool>();
+  static Stream<bool> get isPausedStream => _isPausedStream.stream;
+  static Future<bool> get isPaused => _isPausedStream.stream.last;
+
   static Future<void> setupCamera() async {
     CameraDescription description = await _getCameraByCamDirection(CameraLensDirection.front);
     _camController = CameraController(description, ResolutionPreset.low);
     await _camController.initialize();
   }
 
-  static void startImageStream() {
+  static Future<void> startImageStream() async {
     if (!_isImageStreaming) {
-      _isImageStreaming = true;
-      _camController.startImageStream((CameraImage image) {
+      await _camController.startImageStream((CameraImage image) {
         _imageStreamCtrl.add(image);
         _imagePlanesStreamCtrl.add(ImageUtils.concatanatePlanes(image.planes));
       });
+      _isImageStreaming = true;
     }
   }
 
-  static void stopImageStream() {
+  static Future<void> stopImageStream() async {
     if (_isImageStreaming) {
-      _camController.stopImageStream();
+      await _camController.stopImageStream();
       _isImageStreaming = false;
     }
   }
@@ -46,5 +50,15 @@ class Camera {
   static Future<CameraDescription> _getCameraByCamDirection(CameraLensDirection direction) async {
     List<CameraDescription> descriptions = await availableCameras();
     return descriptions.firstWhere((element) => element.lensDirection == direction);
+  }
+
+  static Future<void> pause() async {
+    await stopImageStream();
+    _isPausedStream.add(true);
+  }
+
+  static Future<void> resume() async {
+    await startImageStream();
+    _isPausedStream.add(false);
   }
 }

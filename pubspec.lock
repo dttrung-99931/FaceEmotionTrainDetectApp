@@ -64,6 +64,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.3.3+1"
+  csv:
+    dependency: transitive
+    description:
+      name: csv
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "5.0.1"
   cupertino_icons:
     dependency: "direct main"
     description:
@@ -170,6 +177,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "2.5.0"
+  injector:
+    dependency: transitive
+    description:
+      name: injector
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "2.0.0"
   js:
     dependency: transitive
     description:
@@ -177,6 +191,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.6.4"
+  json_annotation:
+    dependency: transitive
+    description:
+      name: json_annotation
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "4.6.0"
   lints:
     dependency: transitive
     description:
@@ -205,6 +226,34 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.7.0"
+  ml_algo:
+    dependency: "direct main"
+    description:
+      name: ml_algo
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "16.15.2"
+  ml_dataframe:
+    dependency: transitive
+    description:
+      name: ml_dataframe
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "1.5.1"
+  ml_linalg:
+    dependency: transitive
+    description:
+      name: ml_linalg
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "13.10.0"
+  ml_preprocessing:
+    dependency: transitive
+    description:
+      name: ml_preprocessing
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "7.0.2"
   path:
     dependency: transitive
     description:
@@ -240,6 +289,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.27.4"
+  screenshot:
+    dependency: "direct main"
+    description:
+      name: screenshot
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "1.2.3"
   sky_engine:
     dependency: transitive
     description: flutter
@@ -308,6 +364,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "2.1.2"
+  xrange:
+    dependency: transitive
+    description:
+      name: xrange
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "2.0.0"
 sdks:
   dart: ">=2.17.3 <3.0.0"
   flutter: ">=2.8.0"
