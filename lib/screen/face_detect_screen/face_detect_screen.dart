@@ -3,6 +3,7 @@ import 'dart:developer';
 import 'dart:ui';
 
 import 'package:camera/camera.dart';
+import 'package:face_form_detect/lib/face_emotion_detect/face_emotion_trainer.dart';
 import 'package:face_form_detect/model/detected_face.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -11,6 +12,7 @@ import 'package:flutter/rendering.dart';
 import '../../lib/camera.dart';
 import '../../lib/face_detect.dart';
 import '../../widgets/screenshot_on_event_viewer.dart';
+import 'defined_emotions_widget.dart';
 import 'face_detect_painter.dart';
 
 class FaceDetectScreen extends StatefulWidget {
@@ -82,8 +84,9 @@ class _FaceDetectScreenState extends State<FaceDetectScreen> with WidgetsBinding
                     ),
             ),
           ),
+          const DefinedEmotionsWidget(),
           const Padding(
-            padding: EdgeInsets.symmetric(vertical: 8.0),
+            padding: EdgeInsets.symmetric(vertical: 4.0),
             child: CatchImageToTrainButton(),
           ),
         ],
@@ -108,16 +111,19 @@ class _CatchImageToTrainButtonState extends State<CatchImageToTrainButton> {
         stream: Camera.isPausedStream,
         builder: (context, snapshot) {
           return ElevatedButton(
-            onPressed: () async {
-              if (snapshot.data ?? false) {
-                await Camera.resume();
-              } else {
-                await Camera.pause();
-              }
-            },
+            onPressed: () => _onPressed(snapshot.data ?? false),
             child: Text(snapshot.data ?? false ? 'Back' : 'Catch'),
           );
         });
+  }
+
+  Future<void> _onPressed(bool isDetectingPaused) async {
+    if (isDetectingPaused) {
+      await Camera.resume();
+    } else {
+      await FaceEmotionTrainer.train(FaceDetect.currentDetectedFaces!.faces.first, 'smile');
+      await Camera.pause();
+    }
   }
 }
 

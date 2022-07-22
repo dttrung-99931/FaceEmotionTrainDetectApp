@@ -20,13 +20,19 @@ class FaceDetect {
   ));
 
   static final _facesStreamCtrl = PublishSubject<DetectedFaces>();
+
   static Stream<DetectedFaces> get facesStream => _facesStreamCtrl.stream;
+
+  static DetectedFaces? _currentDetectedFaces;
+  static DetectedFaces? get currentDetectedFaces => _currentDetectedFaces;
 
   static StreamSubscription? _streamSubscription;
   static bool _isDetectingImage = false;
 
   static DateTime _lastDetectTime = DateTime.now();
   static const int _milisDelayDetectAgain = 100;
+
+  static const defaultFaceBoundingBoxSize = 90;
 
   static Future<List<Face>> detectFaces(InputImage inputImage) async {
     try {
@@ -53,10 +59,12 @@ class FaceDetect {
         ),
       );
       List<Face> detected = await detectFaces(inputImage);
+      var detectedFaces = DetectedFaces(detected, inputImage);
       if (detected.isNotEmpty) {
+        _currentDetectedFaces = detectedFaces;
         log('${detected.length} detected');
       }
-      _facesStreamCtrl.add(DetectedFaces(detected, inputImage));
+      _facesStreamCtrl.add(detectedFaces);
       _isDetectingImage = false;
     });
   }
