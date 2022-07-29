@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:camera/camera.dart';
@@ -22,7 +23,9 @@ class Camera {
 
   static Future<void> setupCamera() async {
     CameraDescription description = await _getCameraByCamDirection(CameraLensDirection.front);
-    _camController = CameraController(description, ResolutionPreset.low);
+    _camController = CameraController(description, ResolutionPreset.high, 
+    imageFormatGroup: Platform.isAndroid ? null : ImageFormatGroup.bgra8888,
+    enableAudio: false);
     await _camController.initialize();
   }
 
