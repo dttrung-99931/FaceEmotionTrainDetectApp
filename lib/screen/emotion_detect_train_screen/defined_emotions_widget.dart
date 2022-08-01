@@ -21,7 +21,7 @@ class _DefinedEmotionsWidgetState extends State<DefinedEmotionsWidget> {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      height: 48,
+      height: 32,
       child: Row(
         children: [
           Flexible(
@@ -33,7 +33,14 @@ class _DefinedEmotionsWidgetState extends State<DefinedEmotionsWidget> {
                         ? ListView(
                             scrollDirection: Axis.horizontal,
                             children: emotions
-                                .map((emotion) => Padding(padding: const EdgeInsets.all(8), child: Text(emotion)))
+                                .map(
+                                  (emotion) => _Emotion(
+                                      emotion: emotion,
+                                      onPressed: () {
+                                        FaceEmotionDefine.selectEmotion(emotion);
+                                        setState(() {});
+                                      }),
+                                )
                                 .toList(),
                           )
                         : const Padding(
@@ -60,6 +67,29 @@ class _DefinedEmotionsWidgetState extends State<DefinedEmotionsWidget> {
   }
 }
 
+class _Emotion extends StatelessWidget {
+  final void Function() onPressed;
+  final String emotion;
+
+  const _Emotion({required this.emotion, required this.onPressed, Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: onPressed,
+      child: Container(
+          decoration: BoxDecoration(
+            border: Border.all(
+              color: FaceEmotionDefine.currentSelectedEmotion == emotion ? Colors.purple : Colors.transparent,
+              width: FaceEmotionDefine.currentSelectedEmotion == emotion ? 1 : 0,
+            ),
+          ),
+          padding: const EdgeInsets.all(8),
+          child: Text(emotion)),
+    );
+  }
+}
+
 class AddEmotionDialog extends StatelessWidget {
   AddEmotionDialog({
     Key? key,
@@ -80,16 +110,21 @@ class AddEmotionDialog extends StatelessWidget {
               controller: _controller,
               decoration: const InputDecoration(
                 border: OutlineInputBorder(),
+                hintText: 'Add emotion',
               ),
             ),
-            ElevatedButton(
-                onPressed: () {
-                  if (_controller.text.isNotEmpty) {
-                    FaceEmotionDefine.addEmotion(_controller.text);
-                    Navigator.pop(context);
-                  }
-                },
-                child: const Text('Add')),
+            const SizedBox(height: 8.0),
+            SizedBox(
+              height: 32,
+              child: ElevatedButton(
+                  onPressed: () {
+                    if (_controller.text.isNotEmpty) {
+                      FaceEmotionDefine.addEmotion(_controller.text);
+                      Navigator.pop(context);
+                    }
+                  },
+                  child: const Text('Add')),
+            ),
           ],
         ),
       ),

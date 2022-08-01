@@ -5,7 +5,7 @@ import 'dart:typed_data';
 import 'package:face_form_detect/lib/camera.dart';
 import 'package:face_form_detect/lib/face_detect.dart';
 import 'package:face_form_detect/model/detected_face.dart';
-import 'package:face_form_detect/screen/face_detect_screen/face_detect_painter.dart';
+import 'package:face_form_detect/widgets/face_detect_painter.dart';
 import 'package:flutter/material.dart';
 import 'package:google_mlkit_face_detection/google_mlkit_face_detection.dart';
 import 'package:image_picker/image_picker.dart';

@@ -1,10 +1,8 @@
-import 'dart:developer';
-import 'dart:math';
 import 'dart:ui';
 
 import 'package:face_form_detect/model/detected_face.dart';
+import 'package:face_form_detect/utils/face_property_extension.dart';
 import 'package:face_form_detect/utils/image_utils.dart';
-import 'package:face_form_detect/utils/math_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:google_mlkit_face_detection/google_mlkit_face_detection.dart';
 
@@ -135,67 +133,37 @@ class FaceDetectPainter extends CustomPainter {
     /// Mouth property
 
     // Mouth opening value
-    FaceContour? upperLipBottom = face.contours[FaceContourType.upperLipBottom];
-    FaceContour? lowerLipTop = face.contours[FaceContourType.lowerLipTop];
-    double mouthOpeningValue = 0;
-    if (upperLipBottom != null && lowerLipTop != null) {
-      int pointLenght = upperLipBottom.points.length;
-      for (int i = 0; i < pointLenght; i++) {
-        mouthOpeningValue += lowerLipTop.points[i].y - upperLipBottom.points[i].y;
-      }
-      mouthOpeningValue /= pointLenght;
-      _drawText(
-        face: face,
-        canvas: canvas,
-        text: 'Mouth opening:  ${mouthOpeningValue.toStringAsFixed(2)}',
-        // position: Offset(8, y),
-        position: Offset(8, y += 16),
-      );
-    }
+    _drawText(
+      face: face,
+      canvas: canvas,
+      text: 'Mouth opening:  ${face.mouthOpeningValue.toStringAsFixed(2)}',
+      // position: Offset(8, y),
+      position: Offset(8, y),
+    );
 
     // Mouth width
-    FaceLandmark? leftMouth = face.landmarks[FaceLandmarkType.leftMouth];
-    FaceLandmark? rightMouth = face.landmarks[FaceLandmarkType.rightMouth];
-    int mouthWidth = 0;
-    if (rightMouth != null && leftMouth != null) {
-      mouthWidth = rightMouth.position.x - leftMouth.position.x;
-      _drawText(
-        face: face,
-        canvas: canvas,
-        text: 'Mouth width:  $mouthWidth',
-        position: Offset(8, y += 16),
-      );
-    }
+    _drawText(
+      face: face,
+      canvas: canvas,
+      text: 'Mouth width:  ${face.mouthWidth.toStringAsFixed(2)}',
+      position: Offset(8, y += 16),
+    );
 
     // length from mouth to nose
-    FaceLandmark? nose = face.landmarks[FaceLandmarkType.noseBase];
-    double lengthFromMouthToNose = 0;
-    if (nose != null && rightMouth != null && leftMouth != null) {
-      lengthFromMouthToNose = (leftMouth.position.y - nose.position.y + rightMouth.position.y - nose.position.y) / 2;
-      _drawText(
-        face: face,
-        canvas: canvas,
-        text: 'Length from mouth to nose:  ${lengthFromMouthToNose.toStringAsFixed(2)}',
-        position: Offset(8, y += 16),
-      );
-    }
+    _drawText(
+      face: face,
+      canvas: canvas,
+      text: 'Length from mouth to nose:  ${face.lengthFromMouthToNose.toStringAsFixed(2)}',
+      position: Offset(8, y += 16),
+    );
 
     // Angle between left mouth, bottomMouth and right mouth
-    FaceLandmark? bottomMouth = face.landmarks[FaceLandmarkType.bottomMouth];
-    double angle = 0;
-    if (rightMouth != null && leftMouth != null && bottomMouth != null) {
-      angle = MathUtils.angleABC(
-        leftMouth.position.toOffset(),
-        bottomMouth.position.toOffset(),
-        rightMouth.position.toOffset(),
-      );
-      _drawText(
-        face: face,
-        canvas: canvas,
-        text: 'Mouth angle:  ${angle.toStringAsFixed(2)}',
-        position: Offset(8, y += 16),
-      );
-    }
+    _drawText(
+      face: face,
+      canvas: canvas,
+      text: 'Mouth angle:  ${face.mouthAngle.toStringAsFixed(2)}',
+      position: Offset(8, y += 16),
+    );
   }
 
   void _drawText({

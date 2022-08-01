@@ -1,40 +1,27 @@
-import 'dart:convert';
-import 'dart:developer';
 import 'dart:io';
 
-import 'package:face_form_detect/model/detected_face.dart';
 import 'package:face_form_detect/utils/face_property_extension.dart';
-import 'package:face_form_detect/utils/math_utils.dart';
-import 'package:flutter/foundation.dart';
 import 'package:google_mlkit_face_detection/google_mlkit_face_detection.dart';
-import 'package:ml_algo/ml_algo.dart';
-import 'package:ml_dataframe/ml_dataframe.dart';
 import 'package:path_provider/path_provider.dart';
 
 import '../../utils/permission_utils.dart';
 
 class FaceEmotionTrainer {
-  static const String faceEmotionColName = 'emotionName';
+  static const String columnFaceEmotion = 'emotionName';
 
   static Future<void> train(Face emotionFace, String emotionName) async {
     await PermissionUtils.ensureStoragePermission();
 
     File trainFile = await getTrainFile();
-    if (await trainFile.exists()) {
-      await trainFile.writeAsString(_getEmotionPropertyHeaderCsvLine());
+    if (!await trainFile.exists()) {
+      await trainFile.writeAsString('${_getEmotionPropertyHeaderCsvLine()}\n');
     }
     String csvTrainLine = _getEmotionPropertyCsvLine(emotionFace, emotionName);
-    await trainFile.writeAsString('$csvTrainLine\n');
+    await trainFile.writeAsString('$csvTrainLine\n', mode: FileMode.writeOnlyAppend);
   }
 
   static String _getEmotionPropertyCsvLine(Face emotionFace, String emotionName) {
-    return [
-      emotionFace.mouthOpeningValue.toStringAsFixed(2),
-      emotionFace.mouthWidth.toStringAsFixed(2),
-      emotionFace.lengthFromMouthToNose.toStringAsFixed(2),
-      emotionFace.mouthAngle.toStringAsFixed(2),
-      emotionName
-    ].join(',');
+    return [...emotionFace.faceProperties.map((e) => e.toStringAsFixed(2)), emotionName].join(',');
   }
 
   static String _getEmotionPropertyHeaderCsvLine() {
@@ -43,8 +30,13 @@ class FaceEmotionTrainer {
       'mouthWidth',
       'lengthFromMouthToNose',
       'mouthAngle',
-      faceEmotionColName,
+      columnFaceEmotion,
     ].join(',');
+  }
+
+  static Future<String> getTrainFileContent() async {
+    File file = await getTrainFile();
+    return await file.readAsString();
   }
 
   static Future<File> getTrainFile() async {
@@ -56,5 +48,10 @@ class FaceEmotionTrainer {
 
     File trainFile = File('${trainDir.path}/emotion-face-train-data.csv');
     return trainFile;
+  }
+
+  static Future<void> writeAllTrainFile(String content) async {
+    File file = await getTrainFile();
+    await file.writeAsString(content);
   }
 }

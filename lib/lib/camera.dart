@@ -27,9 +27,12 @@ class Camera {
 
   static Future<void> setupCamera() async {
     CameraDescription description = await _getCameraByCamDirection(CameraLensDirection.front);
-    _camController = CameraController(description, ResolutionPreset.high, 
-    imageFormatGroup: Platform.isAndroid ? null : ImageFormatGroup.bgra8888,
-    enableAudio: false);
+    _camController = CameraController(
+      description,
+      Platform.isAndroid ? ResolutionPreset.low : ResolutionPreset.high,
+      imageFormatGroup: Platform.isAndroid ? null : ImageFormatGroup.bgra8888,
+      enableAudio: false,
+    );
     await _camController.initialize();
   }
 
@@ -45,7 +48,9 @@ class Camera {
 
   static Future<void> stopImageStream() async {
     if (_isImageStreaming) {
-      await _camController.stopImageStream();
+      if (_camController.value.isStreamingImages) {
+        await _camController.stopImageStream();
+      }
       _isImageStreaming = false;
     }
   }

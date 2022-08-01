@@ -52,4 +52,11 @@ extension FaceProperty on Face {
     }
     return angle;
   }
+
+  List<double> get faceProperties => [
+        mouthOpeningValue,
+        mouthWidth,
+        lengthFromMouthToNose,
+        mouthAngle,
+      ];
 }

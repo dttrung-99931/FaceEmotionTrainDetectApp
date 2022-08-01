@@ -1,9 +1,8 @@
-import 'dart:async';
-
-import 'package:face_form_detect/screen/face_detect_screen/face_detect_screen.dart';
-import 'package:face_form_detect/screen/face_detect_from_file_screen.dart';
 import 'package:face_form_detect/global.dart';
+import 'package:face_form_detect/screen/train_file_edit_screen.dart';
 import 'package:flutter/material.dart';
+
+import 'emotion_detect_train_screen/face_detect_train_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({
@@ -40,20 +39,22 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
       body: DefaultTabController(
         length: 2,
         child: Scaffold(
+          resizeToAvoidBottomInset: true,
           appBar: AppBar(
             title: const Text('Face detect'),
             centerTitle: true,
             bottom: TabBar(
               controller: _tabController,
               tabs: const [
-                Tab(text: 'Camera'),
-                Tab(text: 'Image'),
+                Tab(text: 'Train & Test'),
+                Tab(text: 'Train File'),
               ],
             ),
           ),
           body: const TabBarView(children: [
-            FaceDetectScreen(),
-            FaceDetectFromImageScreen(),
+            FaceDetectTrainScreen(),
+            TrainFileEditScreen(),
+            // EmotionDetectScreen(),
           ]),
         ),
       ),
