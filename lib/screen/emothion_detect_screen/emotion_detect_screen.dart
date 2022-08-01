@@ -139,10 +139,7 @@ class FaceDetectViewer extends StatelessWidget {
       children: [
         Positioned.fill(
           /// FIXME: [ScreenshotOnEventViewer] not working with CameraPreview
-          child: ScreenshotOnEventViewer(
-            takeScreenshotStream: Camera.isPausedStream,
-            child: CameraPreview(Camera.controller),
-          ),
+          child: CameraPreview(Camera.controller),
         ),
         Positioned.fill(
           child: StreamBuilder(
