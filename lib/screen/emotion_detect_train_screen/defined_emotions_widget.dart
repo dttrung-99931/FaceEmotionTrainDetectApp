@@ -111,6 +111,7 @@ class AddEmotionDialog extends StatelessWidget {
               decoration: const InputDecoration(
                 border: OutlineInputBorder(),
                 hintText: 'Add emotion',
+                contentPadding: EdgeInsets.symmetric(horizontal: 8),
               ),
             ),
             const SizedBox(height: 8.0),
