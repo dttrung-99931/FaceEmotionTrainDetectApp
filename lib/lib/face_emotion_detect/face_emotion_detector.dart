@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:developer';
 import 'dart:io';
 
 import 'package:face_form_detect/lib/face_emotion_detect/face_emotion_trainer.dart';
@@ -45,6 +46,9 @@ class FaceEmotionDetector {
   static Future<String> detect(Face emotionFace) async {
     /// Read emotion train file
     File trainFile = await FaceEmotionTrainer.getTrainFile();
+    if (!await trainFile.exists()) {
+      return 'No train file';
+    }
     String trainContent = await trainFile.readAsString();
     DataFrame trainDataFrame = DataFrame.fromRawCsv(trainContent);
 
@@ -65,7 +69,9 @@ class FaceEmotionDetector {
     trainDataFrame = trainDataFrame.addSeries(emotionIndexColumn);
 
     /// Detect face emotion by knn classifier
-    KnnClassifier classifier = KnnClassifier(trainDataFrame, FaceEmotionTrainer.columnFaceEmotion, 3);
+    // int k = 7;
+    int k = (trainDataFrame.rows.length / emotions.length * 0.3).toInt();
+    KnnClassifier classifier = KnnClassifier(trainDataFrame, FaceEmotionTrainer.columnFaceEmotion, k);
     var toDetect = DataFrame([emotionFace.faceProperties], headerExists: false);
     DataFrame results = classifier.predict(toDetect);
 

@@ -37,6 +37,7 @@ class FaceEmotionTrainer {
 
   static Future<String> getTrainFileContent() async {
     File file = await getTrainFile();
+    if (!await file.exists()) return '';
     return await file.readAsString();
   }
 
