@@ -1,5 +1,11 @@
+import 'dart:io';
+
 import 'package:face_form_detect/lib/face_emotion_detect/face_emotion_trainer.dart';
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 class TrainFileEditScreen extends StatefulWidget {
   const TrainFileEditScreen({Key? key}) : super(key: key);
@@ -50,11 +56,26 @@ class _TrainFileEditScreenState extends State<TrainFileEditScreen> {
                   },
                   child: const Text('Reload'),
                 ),
-                const SizedBox(width: 16),
+                const SizedBox(width: 8),
                 _SaveButton(
                   onPressed: () async {
                     await FaceEmotionTrainer.writeAllTrainFile(_controller.text);
                   },
+                ),
+                const SizedBox(width: 8),
+                ElevatedButton(
+                  style: ElevatedButton.styleFrom(primary: Colors.green[300]),
+                  onPressed: _importTrainFile,
+                  child: const Text('Import'),
+                ),
+                const SizedBox(width: 8),
+                ElevatedButton(
+                  style: ElevatedButton.styleFrom(primary: Colors.green[300]),
+                  onPressed: () async {
+                    await _exportTrainFile();
+                    Fluttertoast.showToast(msg: 'Exported to download');
+                  },
+                  child: const Text('Export'),
                 ),
               ],
             ),
@@ -62,6 +83,34 @@ class _TrainFileEditScreenState extends State<TrainFileEditScreen> {
         ),
       ),
     );
+  }
+
+  void _importTrainFile() async {
+    FilePickerResult? fileResult = await FilePicker.platform.pickFiles();
+    if (fileResult != null) {
+      File file = File(fileResult.files.single.path!);
+      String content = await file.readAsString();
+      _controller.text = content;
+    } else {
+      Fluttertoast.showToast(msg: 'No file selected');
+    }
+  }
+
+  Future<void> _exportTrainFile() async {
+    String path = await _genExportFilePath();
+    File fileToWrite = File(path);
+    String trainContent = await FaceEmotionTrainer.getTrainFileContent();
+    await fileToWrite.writeAsString(trainContent);
+  }
+
+  Future<String> _genExportFilePath() async {
+    Directory? storageDir = await getExternalStorageDirectory();
+    if (storageDir == null) return '';
+
+    // String downloadDirPath = '/storage/emulated/0/Download';
+    DateTime now = DateTime.now();
+    String date = '${now.day}-${now.month}-${now.year}_${now.hour}h${now.minute}m${now.second}_';
+    return '${storageDir.path}/${date + FaceEmotionTrainer.fileName}';
   }
 }
 

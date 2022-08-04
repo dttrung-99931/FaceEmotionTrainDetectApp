@@ -8,6 +8,7 @@ import '../../utils/permission_utils.dart';
 
 class FaceEmotionTrainer {
   static const String columnFaceEmotion = 'emotionName';
+  static const String fileName = 'emotion-face-train-data.csv';
 
   static Future<void> train(Face emotionFace, String emotionName) async {
     await PermissionUtils.ensureStoragePermission();
@@ -46,7 +47,7 @@ class FaceEmotionTrainer {
       await trainDir.create();
     }
 
-    File trainFile = File('${trainDir.path}/emotion-face-train-data.csv');
+    File trainFile = File('${trainDir.path}/$fileName');
     return trainFile;
   }
 

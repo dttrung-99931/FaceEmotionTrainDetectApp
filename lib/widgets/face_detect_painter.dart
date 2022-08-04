@@ -36,7 +36,7 @@ class FaceDetectPainter extends CustomPainter {
       // _drawContours(face, canvas);
 
       // log(_getFaceAngleInfo(face));
-      // _drawHeadInfo(face, canvas);
+      _drawHeadInfo(face, canvas);
     }
   }
 
@@ -118,58 +118,58 @@ class FaceDetectPainter extends CustomPainter {
 
   void _drawHeadInfo(Face face, Canvas canvas) {
     double y = 8;
-    // _drawText(
-    //   canvas: canvas,
-    //   text: 'xyz angles:  ${_getFaceAngleInfo(face)}',
-    //   position: Offset(8, y),
-    //   // position: Offset(8, y += 16),
-    // );
-    // _drawText(
-    //   canvas: canvas,
-    //   text: 'Smile:  ${((face.smilingProbability ?? 0) * 100).toStringAsFixed(0)}%',
-    //   position: Offset(8, y += 16),
-    // );
-    // _drawText(
-    //   canvas: canvas,
-    //   text: 'Left eye open:  ${((face.leftEyeOpenProbability ?? 0) * 100).toStringAsFixed(0)}%',
-    //   position: Offset(8, y += 16),
-    // );
-    // _drawText(
-    //   canvas: canvas,
-    //   text: 'Right eye open:  ${((face.smilingProbability ?? 0) * 100).toStringAsFixed(0)}%',
-    //   position: Offset(8, y += 16),
-    // );
+    _drawText(
+      canvas: canvas,
+      text: 'xyz angles:  ${_getFaceAngleInfo(face)}',
+      position: Offset(8, y),
+      // position: Offset(8, y += 16),
+    );
+    _drawText(
+      canvas: canvas,
+      text: 'Smile:  ${((face.smilingProbability ?? 0) * 100).toStringAsFixed(0)}%',
+      position: Offset(8, y += 16),
+    );
+    _drawText(
+      canvas: canvas,
+      text: 'Left eye open:  ${((face.leftEyeOpenProbability ?? 0) * 100).toStringAsFixed(0)}%',
+      position: Offset(8, y += 16),
+    );
+    _drawText(
+      canvas: canvas,
+      text: 'Right eye open:  ${((face.smilingProbability ?? 0) * 100).toStringAsFixed(0)}%',
+      position: Offset(8, y += 16),
+    );
 
     /// Mouth property
 
     // Mouth opening value
-    _drawText(
-      canvas: canvas,
-      text: 'Mouth opening:  ${face.mouthOpeningValue.toStringAsFixed(2)}',
-      // position: Offset(8, y),
-      position: Offset(8, y),
-    );
+    // _drawText(
+    //   canvas: canvas,
+    //   text: 'Mouth opening:  ${face.mouthOpeningValue.toStringAsFixed(2)}',
+    //   // position: Offset(8, y),
+    //   position: Offset(8, y),
+    // );
 
-    // Mouth width
-    _drawText(
-      canvas: canvas,
-      text: 'Mouth width:  ${face.mouthWidth.toStringAsFixed(2)}',
-      position: Offset(8, y += 16),
-    );
+    // // Mouth width
+    // _drawText(
+    //   canvas: canvas,
+    //   text: 'Mouth width:  ${face.mouthWidth.toStringAsFixed(2)}',
+    //   position: Offset(8, y += 16),
+    // );
 
-    // length from mouth to nose
-    _drawText(
-      canvas: canvas,
-      text: 'Length from mouth to nose:  ${face.lengthFromMouthToNose.toStringAsFixed(2)}',
-      position: Offset(8, y += 16),
-    );
+    // // length from mouth to nose
+    // _drawText(
+    //   canvas: canvas,
+    //   text: 'Length from mouth to nose:  ${face.lengthFromMouthToNose.toStringAsFixed(2)}',
+    //   position: Offset(8, y += 16),
+    // );
 
-    // Angle between left mouth, bottomMouth and right mouth
-    _drawText(
-      canvas: canvas,
-      text: 'Mouth angle:  ${face.mouthAngle.toStringAsFixed(2)}',
-      position: Offset(8, y += 16),
-    );
+    // // Angle between left mouth, bottomMouth and right mouth
+    // _drawText(
+    //   canvas: canvas,
+    //   text: 'Mouth angle:  ${face.mouthAngle.toStringAsFixed(2)}',
+    //   position: Offset(8, y += 16),
+    // );
   }
 
   void _drawText({
