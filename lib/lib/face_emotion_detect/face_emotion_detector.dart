@@ -1,13 +1,46 @@
+import 'dart:async';
 import 'dart:io';
 
 import 'package:face_form_detect/lib/face_emotion_detect/face_emotion_trainer.dart';
+import 'package:face_form_detect/model/detected_face.dart';
 import 'package:face_form_detect/utils/face_property_extension.dart';
 import 'package:google_mlkit_face_detection/google_mlkit_face_detection.dart';
 import 'package:ml_algo/ml_algo.dart';
 
 import 'package:ml_dataframe/ml_dataframe.dart';
+import 'package:rxdart/rxdart.dart';
 
 class FaceEmotionDetector {
+  static final _emotionStream = PublishSubject<String>();
+  static final Stream<String> emotionStream = _emotionStream.stream;
+  static String currentEmotion = '';
+  static StreamSubscription? _faceSubscription;
+
+  static const int _milisDelayDetectAgain = 150;
+  static DateTime _lastDetectTime = DateTime.now();
+
+  /// Detect emotion of first face from [facesStream]
+  /// Stream detected emotion to [emotionStream]
+  static void startDetecting(Stream<DetectedFaces> facesStream) async {
+    _faceSubscription = facesStream.listen((DetectedFaces faces) async {
+      if (!_isNextValidTimeDetect()) return;
+      _lastDetectTime = DateTime.now();
+
+      if (faces.faces.isEmpty) return;
+
+      currentEmotion = await detect(faces.faces.first);
+      _emotionStream.add(currentEmotion);
+    });
+  }
+
+  static void stopDetecting() {
+    _faceSubscription?.cancel();
+  }
+
+  static bool _isNextValidTimeDetect() {
+    return DateTime.now().millisecondsSinceEpoch - _lastDetectTime.millisecondsSinceEpoch >= _milisDelayDetectAgain;
+  }
+
   /// Return detected emotion
   static Future<String> detect(Face emotionFace) async {
     /// Read emotion train file

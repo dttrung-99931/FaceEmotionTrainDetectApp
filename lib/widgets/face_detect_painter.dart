@@ -1,8 +1,11 @@
+import 'dart:developer';
 import 'dart:ui';
 
+import 'package:face_form_detect/lib/face_emotion_detect/face_emotion_detector.dart';
 import 'package:face_form_detect/model/detected_face.dart';
 import 'package:face_form_detect/utils/face_property_extension.dart';
 import 'package:face_form_detect/utils/image_utils.dart';
+import 'package:face_form_detect/utils/string_extension.dart';
 import 'package:flutter/material.dart';
 import 'package:google_mlkit_face_detection/google_mlkit_face_detection.dart';
 
@@ -28,16 +31,16 @@ class FaceDetectPainter extends CustomPainter {
   void paint(Canvas canvas, Size size) {
     drawSize = size;
     for (var face in detectedFaces.faces) {
-      _drawFaceBox(face, canvas);
+      _drawBoxWithEmotion(face, canvas);
       _drawLandmarks(face, canvas);
       // _drawContours(face, canvas);
 
       // log(_getFaceAngleInfo(face));
-      _drawHeadInfo(face, canvas);
+      // _drawHeadInfo(face, canvas);
     }
   }
 
-  void _drawFaceBox(Face face, Canvas canvas) {
+  void _drawBoxWithEmotion(Face face, Canvas canvas) {
     Rect box = face.boundingBox;
     Rect translatedBox = Rect.fromLTRB(
       ImageUtils.translateX(box.left, imageRotation, drawSize, imageSize),
@@ -46,6 +49,17 @@ class FaceDetectPainter extends CustomPainter {
       ImageUtils.translateY(box.bottom, imageRotation, drawSize, imageSize),
     );
     canvas.drawRect(translatedBox, _boxPaint);
+    Offset emotionPos = Offset(
+      translatedBox.right + (translatedBox.left - translatedBox.right) / 2 - 24,
+      translatedBox.top - 24,
+    );
+    _drawText(
+      canvas: canvas,
+      text: FaceEmotionDetector.currentEmotion.upperCaseFirstChar(),
+      position: emotionPos,
+      color: Colors.green,
+      fontWeight: FontWeight.normal,
+    );
   }
 
   void _drawLandmarks(Face face, Canvas canvas) {
@@ -105,26 +119,22 @@ class FaceDetectPainter extends CustomPainter {
   void _drawHeadInfo(Face face, Canvas canvas) {
     double y = 8;
     // _drawText(
-    //   face: face,
     //   canvas: canvas,
     //   text: 'xyz angles:  ${_getFaceAngleInfo(face)}',
     //   position: Offset(8, y),
     //   // position: Offset(8, y += 16),
     // );
     // _drawText(
-    //   face: face,
     //   canvas: canvas,
     //   text: 'Smile:  ${((face.smilingProbability ?? 0) * 100).toStringAsFixed(0)}%',
     //   position: Offset(8, y += 16),
     // );
     // _drawText(
-    //   face: face,
     //   canvas: canvas,
     //   text: 'Left eye open:  ${((face.leftEyeOpenProbability ?? 0) * 100).toStringAsFixed(0)}%',
     //   position: Offset(8, y += 16),
     // );
     // _drawText(
-    //   face: face,
     //   canvas: canvas,
     //   text: 'Right eye open:  ${((face.smilingProbability ?? 0) * 100).toStringAsFixed(0)}%',
     //   position: Offset(8, y += 16),
@@ -134,7 +144,6 @@ class FaceDetectPainter extends CustomPainter {
 
     // Mouth opening value
     _drawText(
-      face: face,
       canvas: canvas,
       text: 'Mouth opening:  ${face.mouthOpeningValue.toStringAsFixed(2)}',
       // position: Offset(8, y),
@@ -143,7 +152,6 @@ class FaceDetectPainter extends CustomPainter {
 
     // Mouth width
     _drawText(
-      face: face,
       canvas: canvas,
       text: 'Mouth width:  ${face.mouthWidth.toStringAsFixed(2)}',
       position: Offset(8, y += 16),
@@ -151,7 +159,6 @@ class FaceDetectPainter extends CustomPainter {
 
     // length from mouth to nose
     _drawText(
-      face: face,
       canvas: canvas,
       text: 'Length from mouth to nose:  ${face.lengthFromMouthToNose.toStringAsFixed(2)}',
       position: Offset(8, y += 16),
@@ -159,7 +166,6 @@ class FaceDetectPainter extends CustomPainter {
 
     // Angle between left mouth, bottomMouth and right mouth
     _drawText(
-      face: face,
       canvas: canvas,
       text: 'Mouth angle:  ${face.mouthAngle.toStringAsFixed(2)}',
       position: Offset(8, y += 16),
@@ -167,13 +173,14 @@ class FaceDetectPainter extends CustomPainter {
   }
 
   void _drawText({
-    required Face face,
     required Canvas canvas,
     required String text,
     required Offset position,
+    Color color = Colors.white,
+    FontWeight fontWeight = FontWeight.bold,
   }) {
     TextSpan span = TextSpan(
-      style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+      style: TextStyle(color: color, fontWeight: fontWeight),
       text: text,
     );
     TextPainter tp = TextPainter(

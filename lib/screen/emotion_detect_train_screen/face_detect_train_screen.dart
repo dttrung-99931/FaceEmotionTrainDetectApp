@@ -70,6 +70,7 @@ class _FaceDetectTrainScreenState extends State<FaceDetectTrainScreen> with Widg
 
   void _setupDetectingFace() {
     FaceDetect.startDetecting(Camera.imageStream, Camera.controller.description);
+    FaceEmotionDetector.startDetecting(FaceDetect.facesStream);
   }
 
   @override
@@ -96,8 +97,6 @@ class _FaceDetectTrainScreenState extends State<FaceDetectTrainScreen> with Widg
               mainAxisAlignment: MainAxisAlignment.center,
               children: const [
                 CatchImageToTrainButton(),
-                SizedBox(width: 16),
-                DetectEmotionButton(),
               ],
             ),
           ),
@@ -195,6 +194,26 @@ class FaceDetectViewer extends StatelessWidget {
             stream: FaceDetect.facesStream,
           ),
         ),
+        // Positioned.fill(
+        //   child: StreamBuilder<String>(
+        //       stream: FaceEmotionDetector.emotionStream,
+        //       builder: (context, AsyncSnapshot<String> snapshot) {
+        //         return snapshot.hasData
+        //             ? Padding(
+        //                 padding: const EdgeInsets.all(8.0),
+        //                 child: Text(
+        //                   'Emotion: ${snapshot.data!}',
+        //                   style: const TextStyle(
+        //                     color: Colors.white,
+        //                     fontWeight: FontWeight.bold,
+        //                     fontSize: 16,
+        //                   ),
+        //                   textAlign: TextAlign.center,
+        //                 ),
+        //               )
+        //             : const SizedBox.shrink();
+        //       }),
+        // ),
       ],
     );
   }
