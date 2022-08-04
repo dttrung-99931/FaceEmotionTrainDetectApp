@@ -36,7 +36,7 @@ class FaceDetectPainter extends CustomPainter {
       // _drawContours(face, canvas);
 
       // log(_getFaceAngleInfo(face));
-      _drawHeadInfo(face, canvas);
+      // _drawHeadInfo(face, canvas);
     }
   }
 

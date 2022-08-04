@@ -2,7 +2,11 @@ import 'package:flutter/material.dart';
 
 import 'screen/home_screen.dart';
 
-void main() {
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
+  /// Depley to fix ' Null check operator used on a null value' error on release
+  await Future.delayed(const Duration(milliseconds: 300));
   runApp(const FaceFormDetectApp());
 }
 

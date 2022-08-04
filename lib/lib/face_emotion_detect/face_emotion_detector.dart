@@ -45,6 +45,9 @@ class FaceEmotionDetector {
   static Future<String> detect(Face emotionFace) async {
     /// Read emotion train file
     File trainFile = await FaceEmotionTrainer.getTrainFile();
+    if (!await trainFile.exists()) {
+      return 'No train file';
+    }
     String trainContent = await trainFile.readAsString();
     DataFrame trainDataFrame = DataFrame.fromRawCsv(trainContent);
 

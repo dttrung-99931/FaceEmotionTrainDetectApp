@@ -72,8 +72,8 @@ class _TrainFileEditScreenState extends State<TrainFileEditScreen> {
                 ElevatedButton(
                   style: ElevatedButton.styleFrom(primary: Colors.green[300]),
                   onPressed: () async {
-                    await _exportTrainFile();
-                    Fluttertoast.showToast(msg: 'Exported to download');
+                    String path = await _exportTrainFile();
+                    Fluttertoast.showToast(msg: 'Exported to $path');
                   },
                   child: const Text('Export'),
                 ),
@@ -96,11 +96,12 @@ class _TrainFileEditScreenState extends State<TrainFileEditScreen> {
     }
   }
 
-  Future<void> _exportTrainFile() async {
+  Future<String> _exportTrainFile() async {
     String path = await _genExportFilePath();
     File fileToWrite = File(path);
     String trainContent = await FaceEmotionTrainer.getTrainFileContent();
     await fileToWrite.writeAsString(trainContent);
+    return path;
   }
 
   Future<String> _genExportFilePath() async {
