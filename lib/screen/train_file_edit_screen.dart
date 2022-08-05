@@ -73,8 +73,6 @@ class _TrainFileEditScreenState extends State<TrainFileEditScreen> {
                 ElevatedButton(
                   style: ElevatedButton.styleFrom(primary: Colors.green[300]),
                   onPressed: () async {
-                    // String path = await _exportTrainFile();
-                    // Fluttertoast.showToast(msg: 'Exported to $path', toastLength: Toast.LENGTH_LONG);
                     File trainFile = await FaceEmotionTrainer.getTrainFile();
                     await _shareFile(trainFile.path);
                   },
@@ -90,12 +88,11 @@ class _TrainFileEditScreenState extends State<TrainFileEditScreen> {
 
   void _importTrainFile() async {
     FilePickerResult? fileResult = await FilePicker.platform.pickFiles();
+      // if there's a file selected
     if (fileResult != null) {
       File file = File(fileResult.files.single.path!);
       String content = await file.readAsString();
       _controller.text = content;
-    } else {
-      Fluttertoast.showToast(msg: 'No file selected');
     }
   }
 
