@@ -7,6 +7,7 @@ import 'package:camera/camera.dart';
 import 'package:face_form_detect/lib/face_emotion_detect/face_emotion_define.dart';
 import 'package:face_form_detect/lib/face_emotion_detect/face_emotion_trainer.dart';
 import 'package:face_form_detect/model/detected_face.dart';
+import 'package:face_form_detect/widgets/hidden_on_event_widget.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
@@ -77,34 +78,31 @@ class _FaceDetectTrainScreenState extends State<FaceDetectTrainScreen> with Widg
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Column(
-        children: [
-          Expanded(
-            child: AnimatedBuilder(
-              animation: _isCameraInit,
-              builder: (_, __) => _isCameraInit.value
-                  ? Platform.isAndroid
-                      ? const FaceDetectViewer()
-                      : const AspectRatio(aspectRatio: 9 / 16, child: FaceDetectViewer())
-                  : const Center(
-                      child: CircularProgressIndicator(),
-                    ),
+      body: SafeArea(
+        child: Column(
+          children: [
+            Expanded(
+              child: AnimatedBuilder(
+                animation: _isCameraInit,
+                builder: (_, __) => _isCameraInit.value
+                    ? Platform.isAndroid
+                        ? const FaceDetectViewer()
+                        : const AspectRatio(aspectRatio: 9 / 16, child: FaceDetectViewer())
+                    : const Center(
+                        child: CircularProgressIndicator(),
+                      ),
+              ),
             ),
-          ),
-          const DefinedEmotionsWidget(),
-          const SizedBox(height: 8),
-          Container(
-            height: 32,
-            padding: const EdgeInsets.only(bottom: 4.0),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: const [
-                CatchImageToTrainButton(),
-              ],
+            const DefinedEmotionsWidget(),
+            const SizedBox(height: 8),
+            Container(
+              height: 36,
+              width: 128,
+              padding: const EdgeInsets.only(bottom: 4.0),
+              child: const CatchImageToTrainButton(),
             ),
-          ),
-          SizedBox(height: Platform.isAndroid ? 4 : 20),
-        ],
+          ],
+        ),
       ),
     );
   }
@@ -178,9 +176,8 @@ class FaceDetectViewer extends StatelessWidget {
     return Stack(
       children: [
         Positioned.fill(
-          /// FIXME: [ScreenshotOnEventViewer] not working with CameraPreview
-          child: ScreenshotOnEventViewer(
-            takeScreenshotStream: Camera.isPausedStream,
+          child: HiddenOnEventWidget(
+            isHiddenStream: Camera.isPausedStream,
             child: CameraPreview(Camera.controller),
           ),
         ),

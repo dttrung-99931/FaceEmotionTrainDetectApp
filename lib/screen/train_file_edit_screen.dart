@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:face_form_detect/lib/face_emotion_detect/face_emotion_trainer.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -40,6 +41,7 @@ class _TrainFileEditScreenState extends State<TrainFileEditScreen> {
                           border: OutlineInputBorder(),
                         ),
                         scrollPadding: EdgeInsets.zero,
+                        textInputAction: TextInputAction.done,
                       )
                     : const Center(
                         child: CircularProgressIndicator(),
