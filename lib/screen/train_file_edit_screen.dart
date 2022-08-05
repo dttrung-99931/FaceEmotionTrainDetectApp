@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:share_extend/share_extend.dart';
 
 class TrainFileEditScreen extends StatefulWidget {
   const TrainFileEditScreen({Key? key}) : super(key: key);
@@ -72,8 +73,10 @@ class _TrainFileEditScreenState extends State<TrainFileEditScreen> {
                 ElevatedButton(
                   style: ElevatedButton.styleFrom(primary: Colors.green[300]),
                   onPressed: () async {
-                    String path = await _exportTrainFile();
-                    Fluttertoast.showToast(msg: 'Exported to $path');
+                    // String path = await _exportTrainFile();
+                    // Fluttertoast.showToast(msg: 'Exported to $path', toastLength: Toast.LENGTH_LONG);
+                    File trainFile = await FaceEmotionTrainer.getTrainFile();
+                    await _shareFile(trainFile.path);
                   },
                   child: const Text('Export'),
                 ),
@@ -105,13 +108,18 @@ class _TrainFileEditScreenState extends State<TrainFileEditScreen> {
   }
 
   Future<String> _genExportFilePath() async {
-    Directory? storageDir = await getExternalStorageDirectory();
+    Directory? storageDir =
+        Platform.isAndroid ? await getExternalStorageDirectory() : await getApplicationSupportDirectory();
     if (storageDir == null) return '';
 
     // String downloadDirPath = '/storage/emulated/0/Download';
     DateTime now = DateTime.now();
     String date = '${now.day}-${now.month}-${now.year}_${now.hour}h${now.minute}m${now.second}_';
     return '${storageDir.path}/${date + FaceEmotionTrainer.fileName}';
+  }
+
+  Future<void> _shareFile(String path) async {
+    await ShareExtend.share(path, 'text');
   }
 }
 
