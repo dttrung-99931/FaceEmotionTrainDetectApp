@@ -14,7 +14,7 @@ extension FaceProperty on Face {
       }
       mouthOpeningValue /= pointLenght;
     }
-    return FaceEmotionTrainer.standardizeFacePropertyByY(mouthOpeningValue, boundingBox.size);
+    return FaceEmotionTrainer.toFaceHeightPercents(mouthOpeningValue, boundingBox.size);
   }
 
   double get mouthWidth {
@@ -24,7 +24,7 @@ extension FaceProperty on Face {
     if (rightMouth != null && leftMouth != null) {
       mouthWidth = (rightMouth.position.x - leftMouth.position.x).toDouble();
     }
-    return FaceEmotionTrainer.standardizeFacePropertyByX(mouthWidth, boundingBox.size);
+    return FaceEmotionTrainer.toFaceWidthPercents(mouthWidth, boundingBox.size);
   }
 
   double get lengthFromMouthToNose {
@@ -35,7 +35,7 @@ extension FaceProperty on Face {
     if (nose != null && rightMouth != null && leftMouth != null) {
       lengthFromMouthToNose = (leftMouth.position.y - nose.position.y + rightMouth.position.y - nose.position.y) / 2;
     }
-    return FaceEmotionTrainer.standardizeFacePropertyByY(lengthFromMouthToNose, boundingBox.size);
+    return FaceEmotionTrainer.toFaceHeightPercents(lengthFromMouthToNose, boundingBox.size);
   }
 
   /// Angle between left mouth, bottom mouth and bottom mouth

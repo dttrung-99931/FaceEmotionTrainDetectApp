@@ -59,11 +59,11 @@ class FaceEmotionTrainer {
     await file.writeAsString(content);
   }
 
-  static double standardizeFacePropertyByX(double value, Size faceSize) {
-    return value * standardFaceSize.width / faceSize.width;
+  static double toFaceWidthPercents(double value, Size faceSize) {
+    return value / faceSize.width * 100;
   }
 
-  static double standardizeFacePropertyByY(double value, Size faceSize) {
-    return value * standardFaceSize.height / faceSize.height;
+  static double toFaceHeightPercents(double value, Size faceSize) {
+    return value / faceSize.height * 100;
   }
 }

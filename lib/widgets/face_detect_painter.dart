@@ -131,12 +131,12 @@ class FaceDetectPainter extends CustomPainter {
     // );
     // _drawText(
     //   canvas: canvas,
-    //   text: 'Left eye open:  ${((face.leftEyeOpenProbability ?? 0) * 100).toStringAsFixed(0)}%',
+    //   text: 'Left eye open:  ${((face.rightEyeOpenProbability ?? 0) * 100).toStringAsFixed(0)}%',
     //   position: Offset(8, y += 16),
     // );
     // _drawText(
     //   canvas: canvas,
-    //   text: 'Right eye open:  ${((face.smilingProbability ?? 0) * 100).toStringAsFixed(0)}%',
+    //   text: 'Right eye open:  ${((face.leftEyeOpenProbability ?? 0) * 100).toStringAsFixed(0)}%',
     //   position: Offset(8, y += 16),
     // );
 
