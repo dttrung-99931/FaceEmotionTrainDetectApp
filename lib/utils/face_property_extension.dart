@@ -1,3 +1,4 @@
+import 'package:face_form_detect/lib/face_emotion_detect/face_emotion_trainer.dart';
 import 'package:face_form_detect/utils/math_utils.dart';
 import 'package:google_mlkit_face_detection/google_mlkit_face_detection.dart';
 
@@ -13,7 +14,7 @@ extension FaceProperty on Face {
       }
       mouthOpeningValue /= pointLenght;
     }
-    return mouthOpeningValue;
+    return FaceEmotionTrainer.standardizeFacePropertyByY(mouthOpeningValue, boundingBox.size);
   }
 
   double get mouthWidth {
@@ -23,7 +24,7 @@ extension FaceProperty on Face {
     if (rightMouth != null && leftMouth != null) {
       mouthWidth = (rightMouth.position.x - leftMouth.position.x).toDouble();
     }
-    return mouthWidth;
+    return FaceEmotionTrainer.standardizeFacePropertyByX(mouthWidth, boundingBox.size);
   }
 
   double get lengthFromMouthToNose {
@@ -34,7 +35,7 @@ extension FaceProperty on Face {
     if (nose != null && rightMouth != null && leftMouth != null) {
       lengthFromMouthToNose = (leftMouth.position.y - nose.position.y + rightMouth.position.y - nose.position.y) / 2;
     }
-    return lengthFromMouthToNose;
+    return FaceEmotionTrainer.standardizeFacePropertyByY(lengthFromMouthToNose, boundingBox.size);
   }
 
   /// Angle between left mouth, bottom mouth and bottom mouth

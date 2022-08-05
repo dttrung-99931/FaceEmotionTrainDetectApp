@@ -3,9 +3,11 @@ import 'dart:io';
 import 'package:face_form_detect/lib/face_emotion_detect/face_emotion_trainer.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:share_extend/share_extend.dart';
 
 class TrainFileEditScreen extends StatefulWidget {
   const TrainFileEditScreen({Key? key}) : super(key: key);
@@ -39,6 +41,7 @@ class _TrainFileEditScreenState extends State<TrainFileEditScreen> {
                           border: OutlineInputBorder(),
                         ),
                         scrollPadding: EdgeInsets.zero,
+                        textInputAction: TextInputAction.done,
                       )
                     : const Center(
                         child: CircularProgressIndicator(),
@@ -72,8 +75,8 @@ class _TrainFileEditScreenState extends State<TrainFileEditScreen> {
                 ElevatedButton(
                   style: ElevatedButton.styleFrom(primary: Colors.green[300]),
                   onPressed: () async {
-                    String path = await _exportTrainFile();
-                    Fluttertoast.showToast(msg: 'Exported to $path');
+                    File trainFile = await FaceEmotionTrainer.getTrainFile();
+                    await _shareFile(trainFile.path);
                   },
                   child: const Text('Export'),
                 ),
@@ -87,12 +90,11 @@ class _TrainFileEditScreenState extends State<TrainFileEditScreen> {
 
   void _importTrainFile() async {
     FilePickerResult? fileResult = await FilePicker.platform.pickFiles();
+    // if there's a file selected
     if (fileResult != null) {
       File file = File(fileResult.files.single.path!);
       String content = await file.readAsString();
       _controller.text = content;
-    } else {
-      Fluttertoast.showToast(msg: 'No file selected');
     }
   }
 
@@ -105,13 +107,18 @@ class _TrainFileEditScreenState extends State<TrainFileEditScreen> {
   }
 
   Future<String> _genExportFilePath() async {
-    Directory? storageDir = await getExternalStorageDirectory();
+    Directory? storageDir =
+        Platform.isAndroid ? await getExternalStorageDirectory() : await getApplicationSupportDirectory();
     if (storageDir == null) return '';
 
     // String downloadDirPath = '/storage/emulated/0/Download';
     DateTime now = DateTime.now();
     String date = '${now.day}-${now.month}-${now.year}_${now.hour}h${now.minute}m${now.second}_';
     return '${storageDir.path}/${date + FaceEmotionTrainer.fileName}';
+  }
+
+  Future<void> _shareFile(String path) async {
+    await ShareExtend.share(path, 'text');
   }
 }
 

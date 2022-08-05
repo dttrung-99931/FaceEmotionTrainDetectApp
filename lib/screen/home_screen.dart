@@ -4,60 +4,36 @@ import 'package:flutter/material.dart';
 
 import 'emotion_detect_train_screen/face_detect_train_screen.dart';
 
-class HomeScreen extends StatefulWidget {
+class HomeScreen extends StatelessWidget {
   const HomeScreen({
     Key? key,
   }) : super(key: key);
 
   @override
-  State<HomeScreen> createState() {
-    return _HomeScreenState();
-  }
-}
-
-class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateMixin {
-  late final TabController _tabController;
-
-  @override
-  void initState() {
-    _tabController = TabController(length: 2, vsync: this);
-    _tabController.addListener(() {
-      Global.setCurrentHomeTabIndex(_tabController.index);
-    });
-    super.initState();
-  }
-
-  @override
-  void dispose() {
-    _tabController.dispose();
-    super.dispose();
-  }
-
-  @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: DefaultTabController(
+    return DefaultTabController(
         length: 2,
-        child: Scaffold(
-          resizeToAvoidBottomInset: true,
-          appBar: AppBar(
-            title: const Text('Face detect'),
-            centerTitle: true,
-            bottom: TabBar(
-              controller: _tabController,
-              tabs: const [
-                Tab(text: 'Train & Test'),
-                Tab(text: 'Train File'),
-              ],
+        child: Builder(
+          builder: (nestedContext) => Scaffold(
+            resizeToAvoidBottomInset: true,
+            appBar: AppBar(
+              title: const Text('Face detect'),
+              centerTitle: true,
+              bottom: TabBar(
+                controller: DefaultTabController.of(nestedContext),
+                tabs: const [
+                  Tab(text: 'Train & Test'),
+                  Tab(text: 'Train File'),
+                ],
+              ),
             ),
+            body: const TabBarView(children: [
+              FaceDetectTrainScreen(),
+              TrainFileEditScreen(),
+              // EmotionDetectScreen(),
+            ]),
           ),
-          body: const TabBarView(children: [
-            FaceDetectTrainScreen(),
-            TrainFileEditScreen(),
-            // EmotionDetectScreen(),
-          ]),
         ),
-      ),
-    );
+      );
   }
 }

@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:face_form_detect/utils/face_property_extension.dart';
+import 'package:flutter/material.dart';
 import 'package:google_mlkit_face_detection/google_mlkit_face_detection.dart';
 import 'package:path_provider/path_provider.dart';
 
@@ -9,6 +10,7 @@ import '../../utils/permission_utils.dart';
 class FaceEmotionTrainer {
   static const String columnFaceEmotion = 'emotionName';
   static const String fileName = 'emotion-face-train-data.csv';
+  static const Size standardFaceSize = Size(96, 96);
 
   static Future<void> train(Face emotionFace, String emotionName) async {
     await PermissionUtils.ensureStoragePermission();
@@ -55,5 +57,13 @@ class FaceEmotionTrainer {
   static Future<void> writeAllTrainFile(String content) async {
     File file = await getTrainFile();
     await file.writeAsString(content);
+  }
+
+  static double standardizeFacePropertyByX(double value, Size faceSize) {
+    return value * standardFaceSize.width / faceSize.width;
+  }
+
+  static double standardizeFacePropertyByY(double value, Size faceSize) {
+    return value * standardFaceSize.height / faceSize.height;
   }
 }
