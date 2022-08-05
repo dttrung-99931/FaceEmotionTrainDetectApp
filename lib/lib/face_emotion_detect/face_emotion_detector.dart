@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:developer';
 import 'dart:io';
+import 'dart:math';
 
 import 'package:face_form_detect/lib/face_emotion_detect/face_emotion_trainer.dart';
 import 'package:face_form_detect/model/detected_face.dart';
@@ -71,6 +72,7 @@ class FaceEmotionDetector {
     /// Detect face emotion by knn classifier
     // int k = 7;
     int k = (trainDataFrame.rows.length / emotions.length * 0.3).toInt();
+    k = min(max(k, 1), trainDataFrame.rows.length);
     KnnClassifier classifier = KnnClassifier(trainDataFrame, FaceEmotionTrainer.columnFaceEmotion, k);
     var toDetect = DataFrame([emotionFace.faceProperties], headerExists: false);
     DataFrame results = classifier.predict(toDetect);

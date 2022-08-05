@@ -54,10 +54,40 @@ extension FaceProperty on Face {
     return angle;
   }
 
+  /// Length from left check to right check landmarks
+  double get cheekWidth {
+    FaceLandmark? leftCheek = landmarks[FaceLandmarkType.leftCheek];
+    FaceLandmark? rightCheek = landmarks[FaceLandmarkType.rightCheek];
+    double width = 0;
+    if (leftCheek != null && rightCheek != null) {
+      width = (rightCheek.position.x - leftCheek.position.x).toDouble();
+    }
+    return FaceEmotionTrainer.toFaceWidthPercents(width, boundingBox.size);
+  }
+
+  /// Length from left check to right check landmarks
+  double get lengthFromCheekToEye {
+    FaceLandmark? leftCheek = landmarks[FaceLandmarkType.leftCheek];
+    FaceLandmark? leftEye = landmarks[FaceLandmarkType.leftEye];
+    FaceLandmark? rightCheek = landmarks[FaceLandmarkType.rightCheek];
+    FaceLandmark? rightEye = landmarks[FaceLandmarkType.rightEye];
+
+    double length = 0;
+    if (leftCheek != null && leftEye != null && rightEye != null && rightCheek != null) {
+      length = (leftCheek.position.y - leftEye.position.y + rightCheek.position.y - rightEye.position.y) / 2;
+    }
+    return FaceEmotionTrainer.toFaceHeightPercents(length, boundingBox.size);
+  }
+
   List<double> get faceProperties => [
         mouthOpeningValue,
         mouthWidth,
         lengthFromMouthToNose,
         mouthAngle,
+        (smilingProbability ?? 0) * 100,
+        (rightEyeOpenProbability ?? 0) * 100,
+        (leftEyeOpenProbability ?? 0) * 100,
+        cheekWidth,
+        lengthFromCheekToEye
       ];
 }

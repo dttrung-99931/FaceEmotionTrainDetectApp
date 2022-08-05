@@ -143,31 +143,43 @@ class FaceDetectPainter extends CustomPainter {
     /// Mouth property
 
     // Mouth opening value
-    _drawText(
-      canvas: canvas,
-      text: 'Mouth opening:  ${face.mouthOpeningValue.toStringAsFixed(2)}',
-      // position: Offset(8, y),
-      position: Offset(8, y),
-    );
+    // _drawText(
+    //   canvas: canvas,
+    //   text: 'Mouth opening:  ${face.mouthOpeningValue.toStringAsFixed(2)}',
+    //   // position: Offset(8, y),
+    //   position: Offset(8, y),
+    // );
 
-    // Mouth width
+    // // Mouth width
+    // _drawText(
+    //   canvas: canvas,
+    //   text: 'Mouth width:  ${face.mouthWidth.toStringAsFixed(2)}',
+    //   position: Offset(8, y += 16),
+    // );
+
+    // // length from mouth to nose
+    // _drawText(
+    //   canvas: canvas,
+    //   text: 'Length from mouth to nose:  ${face.lengthFromMouthToNose.toStringAsFixed(2)}',
+    //   position: Offset(8, y += 16),
+    // );
+
+    // // Angle between left mouth, bottomMouth and right mouth
+    // _drawText(
+    //   canvas: canvas,
+    //   text: 'Mouth angle:  ${face.mouthAngle.toStringAsFixed(2)}',
+    //   position: Offset(8, y += 16),
+    // );
+
     _drawText(
       canvas: canvas,
-      text: 'Mouth width:  ${face.mouthWidth.toStringAsFixed(2)}',
+      text: 'Cheek width:  ${face.cheekWidth.toStringAsFixed(2)}',
       position: Offset(8, y += 16),
     );
 
-    // length from mouth to nose
     _drawText(
       canvas: canvas,
-      text: 'Length from mouth to nose:  ${face.lengthFromMouthToNose.toStringAsFixed(2)}',
-      position: Offset(8, y += 16),
-    );
-
-    // Angle between left mouth, bottomMouth and right mouth
-    _drawText(
-      canvas: canvas,
-      text: 'Mouth angle:  ${face.mouthAngle.toStringAsFixed(2)}',
+      text: 'Length from cheek to eye:  ${face.lengthFromCheekToEye.toStringAsFixed(2)}',
       position: Offset(8, y += 16),
     );
 
