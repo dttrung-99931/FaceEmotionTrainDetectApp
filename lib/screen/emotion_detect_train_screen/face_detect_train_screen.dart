@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:developer';
+import 'dart:io';
 import 'dart:ui';
 
 import 'package:camera/camera.dart';
@@ -82,7 +83,9 @@ class _FaceDetectTrainScreenState extends State<FaceDetectTrainScreen> with Widg
             child: AnimatedBuilder(
               animation: _isCameraInit,
               builder: (_, __) => _isCameraInit.value
-                  ? const FaceDetectViewer()
+                  ? Platform.isAndroid
+                      ? const FaceDetectViewer()
+                      : const AspectRatio(aspectRatio: 9 / 16, child: FaceDetectViewer())
                   : const Center(
                       child: CircularProgressIndicator(),
                     ),
@@ -91,7 +94,7 @@ class _FaceDetectTrainScreenState extends State<FaceDetectTrainScreen> with Widg
           const DefinedEmotionsWidget(),
           const SizedBox(height: 8),
           Container(
-            height: 36,
+            height: 32,
             padding: const EdgeInsets.only(bottom: 4.0),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -100,7 +103,7 @@ class _FaceDetectTrainScreenState extends State<FaceDetectTrainScreen> with Widg
               ],
             ),
           ),
-          const SizedBox(height: 4),
+          SizedBox(height: Platform.isAndroid ? 4 : 20),
         ],
       ),
     );
