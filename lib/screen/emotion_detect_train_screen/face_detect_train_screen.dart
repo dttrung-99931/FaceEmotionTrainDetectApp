@@ -85,9 +85,7 @@ class _FaceDetectTrainScreenState extends State<FaceDetectTrainScreen> with Widg
               child: AnimatedBuilder(
                 animation: _isCameraInit,
                 builder: (_, __) => _isCameraInit.value
-                    ? Platform.isAndroid
-                        ? const FaceDetectViewer()
-                        : const AspectRatio(aspectRatio: 9 / 16, child: FaceDetectViewer())
+                    ? const FaceDetectViewer()
                     : const Center(
                         child: CircularProgressIndicator(),
                       ),
@@ -101,6 +99,7 @@ class _FaceDetectTrainScreenState extends State<FaceDetectTrainScreen> with Widg
               padding: const EdgeInsets.only(bottom: 4.0),
               child: const CatchImageToTrainButton(),
             ),
+            SizedBox(height: Platform.isIOS ? 64 : 0),
           ],
         ),
       ),

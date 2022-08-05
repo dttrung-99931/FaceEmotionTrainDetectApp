@@ -10,7 +10,7 @@ import '../../utils/permission_utils.dart';
 class FaceEmotionTrainer {
   static const String columnFaceEmotion = 'emotionName';
   static const String fileName = 'emotion-face-train-data.csv';
-  static const Size standardFaceSize = Size(96, 96);
+  static const Size standardFaceSize = Size(72, 72);
 
   static Future<void> train(Face emotionFace, String emotionName) async {
     await PermissionUtils.ensureStoragePermission();

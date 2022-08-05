@@ -29,7 +29,7 @@ class Camera {
     CameraDescription description = await _getCameraByCamDirection(CameraLensDirection.front);
     _camController = CameraController(
       description,
-      Platform.isAndroid ? ResolutionPreset.low : ResolutionPreset.high,
+      ResolutionPreset.low,
       imageFormatGroup: Platform.isAndroid ? null : ImageFormatGroup.bgra8888,
       enableAudio: false,
     );
