@@ -34,8 +34,6 @@ class FaceEmotionTrainer {
       'lengthFromMouthToNose',
       'mouthAngle',
       'smilingProbability',
-      'leftEyeOpenProbability',
-      'rightEyeOpenProbability',
       'cheekWidth',
       'lengthFromCheekToEye',
       columnFaceEmotion,
