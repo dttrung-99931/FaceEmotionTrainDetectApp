@@ -63,7 +63,7 @@ class _FaceDetectScreenState extends State<EmotionDetectScreen> with WidgetsBind
   }
 
   void _setupDetectingFace() {
-    FaceDetect.startDetecting(Camera.imageStream, Camera.controller.description);
+    FaceDetect.startDetecting(Camera.imageStream);
   }
 
   @override

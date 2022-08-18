@@ -3,6 +3,7 @@ import 'dart:developer';
 import 'dart:typed_data';
 
 import 'package:camera/camera.dart';
+import 'package:face_form_detect/lib/camera.dart';
 import 'package:face_form_detect/model/detected_face.dart';
 import 'package:face_form_detect/utils/image_utils.dart';
 import 'package:flutter/foundation.dart';
@@ -45,7 +46,7 @@ class FaceDetect {
 
   /// Detect face from image stream
   /// Send detected faces to [facesStream]
-  static void startDetecting(Stream<CameraImage> imgStream, CameraDescription camDescription) {
+  static void startDetecting(Stream<CameraImage> imgStream) {
     _streamSubscription = imgStream.listen((image) async {
       if (_isDetectingImage || !_isNextValidTimeDetect()) return;
       _isDetectingImage = true;
@@ -55,7 +56,7 @@ class FaceDetect {
         bytes: ImageUtils.concatanatePlanes(image.planes),
         inputImageData: _buildInputImageData(
           image,
-          InputImageRotationValue.fromRawValue(camDescription.sensorOrientation)!,
+          InputImageRotationValue.fromRawValue(Camera.controller.description.sensorOrientation)!,
         ),
       );
       List<Face> detected = await detectFaces(inputImage);

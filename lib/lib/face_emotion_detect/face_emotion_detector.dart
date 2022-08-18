@@ -81,4 +81,24 @@ class FaceEmotionDetector {
     int? detectedEmotionIndex = results.rows.isNotEmpty ? results.rows.first.last.toInt() : null;
     return detectedEmotionIndex != null ? emotions[detectedEmotionIndex] : 'No detected';
   }
+
+  static Future<void> _correctTrainFile(File trainFile, String trainContent) async {
+    List<String> lines = trainContent.split('\n').where((line) => line.isNotEmpty).toList();
+    if (lines.length < 2) return;
+
+    var columnCount = lines[0].split(',').length;
+    var valueCount = lines[1].split(',').length;
+    bool isDataLineFitHeaderLine = columnCount == valueCount;
+    if (isDataLineFitHeaderLine) return; // train file is corret, no need fixing
+
+    int valueCountToAdd = columnCount - valueCount;
+    if (valueCountToAdd <= 0) return; // only fix value count != column count, not fix otherwise
+    for (int i = 1; i < lines.length; i++) {
+      int lastCommaIdx = lines[i].lastIndexOf(',');
+      lines[i] += '${',0.00' * valueCountToAdd}\n';
+      lines[i] = lines[i].substring(0, lastCommaIdx) + ',0.00' * valueCountToAdd + lines[i].substring(lastCommaIdx);
+    }
+    String fixed = '${lines.join('\n')}\n';
+    await trainFile.writeAsString(fixed);
+  }
 }

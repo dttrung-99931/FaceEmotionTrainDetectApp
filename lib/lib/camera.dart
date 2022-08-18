@@ -9,6 +9,7 @@ import 'package:rxdart/rxdart.dart';
 
 class Camera {
   static late CameraController _camController;
+
   static CameraController get controller => _camController;
 
   static final _imageStreamCtrl = PublishSubject<CameraImage>();
@@ -25,8 +26,10 @@ class Camera {
   static Stream<bool> get isPausedStream => _isPausedStream.stream;
   static Future<bool> get isPaused => _isPausedStream.stream.last;
 
+  static CameraLensDirection _camDirection = CameraLensDirection.back;
+
   static Future<void> setupCamera() async {
-    CameraDescription description = await _getCameraByCamDirection(CameraLensDirection.front);
+    CameraDescription description = await _getCameraByCamDirection(_camDirection);
     _camController = CameraController(
       description,
       ResolutionPreset.low,
@@ -68,5 +71,13 @@ class Camera {
   static Future<void> resume() async {
     await startImageStream();
     _isPausedStream.add(false);
+  }
+
+  static void switchCameraDirecttion() async {
+    _camDirection = _camDirection == CameraLensDirection.back ? CameraLensDirection.front : CameraLensDirection.back;
+  }
+
+  static Future<void> dispose() async {
+    await _camController.dispose();
   }
 }

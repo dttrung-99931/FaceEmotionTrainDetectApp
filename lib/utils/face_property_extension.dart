@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:face_form_detect/lib/face_emotion_detect/face_emotion_trainer.dart';
 import 'package:face_form_detect/utils/math_utils.dart';
 import 'package:google_mlkit_face_detection/google_mlkit_face_detection.dart';
@@ -79,13 +81,34 @@ extension FaceProperty on Face {
     return FaceEmotionTrainer.toFaceHeightPercents(length, boundingBox.size);
   }
 
+  double get leftEyeOpeningValue =>
+      contours[FaceContourType.leftEye] != null ? _getEyeOpeningValue(contours[FaceContourType.leftEye]!) : 0;
+
+  double get rightEyeOpeningValue =>
+      contours[FaceContourType.rightEye] != null ? _getEyeOpeningValue(contours[FaceContourType.rightEye]!) : 0;
+
+  double _getEyeOpeningValue(FaceContour eyeContour) {
+    double openingValue = 0;
+    int length = eyeContour.points.length;
+    for (int i = 0; i < length / 2; i++) {
+      openingValue += eyeContour.points[length - 1 - i].y - eyeContour.points[i].y;
+    }
+    openingValue /= length;
+    double percents = FaceEmotionTrainer.toFaceHeightPercents(openingValue, boundingBox.size);
+    return percents;
+  }
+
   List<double> get faceProperties => [
         mouthOpeningValue,
         mouthWidth,
         lengthFromMouthToNose,
         mouthAngle,
-        (smilingProbability ?? 0) * 100,
+        // (smilingProbability ?? 0) * 100,
         cheekWidth,
-        lengthFromCheekToEye
+        lengthFromCheekToEye,
+        // leftEyeOpenProbability ?? 0,
+        // rightEyeOpenProbability ?? 0,
+        leftEyeOpeningValue,
+        rightEyeOpeningValue,
       ];
 }

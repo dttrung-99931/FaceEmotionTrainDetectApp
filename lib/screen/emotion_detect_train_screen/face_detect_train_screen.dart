@@ -28,7 +28,7 @@ class FaceDetectTrainScreen extends StatefulWidget {
 }
 
 class _FaceDetectTrainScreenState extends State<FaceDetectTrainScreen> with WidgetsBindingObserver {
-  final _isCameraInit = ValueNotifier<bool>(false);
+  final _isCamInit = ValueNotifier<bool>(false);
   final _listenCancelers = <StreamSubscription>[];
 
   @override
@@ -42,6 +42,7 @@ class _FaceDetectTrainScreenState extends State<FaceDetectTrainScreen> with Widg
   void dispose() {
     _cancelListeners();
     Camera.stopImageStream();
+    Camera.dispose();
     WidgetsBinding.instance.removeObserver(this);
     super.dispose();
   }
@@ -65,14 +66,22 @@ class _FaceDetectTrainScreenState extends State<FaceDetectTrainScreen> with Widg
   }
 
   Future<void> _setupCamera() async {
+    _isCamInit.value = false;
     await Camera.setupCamera();
-    _isCameraInit.value = true;
-    Camera.startImageStream();
+    await Camera.startImageStream();
+    _isCamInit.value = true;
   }
 
   void _setupDetectingFace() {
-    FaceDetect.startDetecting(Camera.imageStream, Camera.controller.description);
+    FaceDetect.startDetecting(Camera.imageStream);
     FaceEmotionDetector.startDetecting(FaceDetect.facesStream);
+  }
+
+  Future<void> _switchCamera() async {
+    Camera.switchCameraDirecttion();
+    await Camera.stopImageStream();
+    await Camera.dispose();
+    await _setup();
   }
 
   @override
@@ -83,9 +92,27 @@ class _FaceDetectTrainScreenState extends State<FaceDetectTrainScreen> with Widg
           children: [
             Expanded(
               child: AnimatedBuilder(
-                animation: _isCameraInit,
-                builder: (_, __) => _isCameraInit.value
-                    ? const FaceDetectViewer()
+                animation: _isCamInit,
+                builder: (_, __) => _isCamInit.value
+                    ? Stack(
+                        children: [
+                          const FaceDetectViewer(),
+                          Positioned.fill(
+                            bottom: 4,
+                            child: Align(
+                              alignment: Alignment.bottomCenter,
+                              child: Material(
+                                color: Colors.transparent,
+                                shape: const CircleBorder(),
+                                child: IconButton(
+                                  onPressed: _switchCamera,
+                                  icon: const Icon(Icons.cameraswitch_outlined, color: Colors.purple),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      )
                     : const Center(
                         child: CircularProgressIndicator(),
                       ),

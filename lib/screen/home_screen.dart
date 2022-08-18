@@ -1,4 +1,5 @@
 import 'package:face_form_detect/global.dart';
+import 'package:face_form_detect/screen/face_detect_from_file_screen.dart';
 import 'package:face_form_detect/screen/train_file_edit_screen.dart';
 import 'package:flutter/material.dart';
 
@@ -12,28 +13,28 @@ class HomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
-        length: 2,
-        child: Builder(
-          builder: (nestedContext) => Scaffold(
-            resizeToAvoidBottomInset: true,
-            appBar: AppBar(
-              title: const Text('Face detect'),
-              centerTitle: true,
-              bottom: TabBar(
-                controller: DefaultTabController.of(nestedContext),
-                tabs: const [
-                  Tab(text: 'Train & Test'),
-                  Tab(text: 'Train File'),
-                ],
-              ),
+      length: 2,
+      child: Builder(
+        builder: (nestedContext) => Scaffold(
+          resizeToAvoidBottomInset: true,
+          appBar: AppBar(
+            title: const Text('Face detect'),
+            centerTitle: true,
+            bottom: TabBar(
+              controller: DefaultTabController.of(nestedContext),
+              tabs: const [
+                Tab(text: 'Train & Test'),
+                Tab(text: 'Train File'),
+              ],
             ),
-            body: const TabBarView(children: [
-              FaceDetectTrainScreen(),
-              TrainFileEditScreen(),
-              // EmotionDetectScreen(),
-            ]),
           ),
+          body: const TabBarView(children: [
+            FaceDetectTrainScreen(),
+            TrainFileEditScreen(),
+            // FaceDetectFromImageScreen(),
+          ]),
         ),
-      );
+      ),
+    );
   }
 }
