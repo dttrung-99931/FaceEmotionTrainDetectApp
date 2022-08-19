@@ -40,6 +40,7 @@ class FaceEmotionTrainer {
       // 'rightEyeOpenProbability',
       'leftEyeOpeningValue',
       'rightEyeOpeningValue',
+      'lengthEyebrowsToEyes',
       columnFaceEmotion,
     ].join(',');
   }

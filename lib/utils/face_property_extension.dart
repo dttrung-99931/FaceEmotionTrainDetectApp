@@ -40,6 +40,19 @@ extension FaceProperty on Face {
     return FaceEmotionTrainer.toFaceHeightPercents(lengthFromMouthToNose, boundingBox.size);
   }
 
+  double get lengthEyebrowsToEyes {
+    FaceContour? leftEyebrowTop = contours[FaceContourType.leftEyebrowTop];
+    FaceContour? rightEyebrowTop = contours[FaceContourType.rightEyebrowTop];
+    FaceLandmark? nose = landmarks[FaceLandmarkType.noseBase];
+    double length = 0;
+    if (nose != null && leftEyebrowTop != null && rightEyebrowTop != null) {
+      double totalLength = [...leftEyebrowTop.points, ...rightEyebrowTop.points]
+          .fold<double>(0, (previousValue, element) => previousValue + nose.position.y - element.y);
+      length = totalLength / (leftEyebrowTop.points.length + rightEyebrowTop.points.length);
+    }
+    return FaceEmotionTrainer.toFaceHeightPercents(length, boundingBox.size);
+  }
+
   /// Angle between left mouth, bottom mouth and bottom mouth
   double get mouthAngle {
     FaceLandmark? leftMouth = landmarks[FaceLandmarkType.leftMouth];
@@ -110,5 +123,6 @@ extension FaceProperty on Face {
         // rightEyeOpenProbability ?? 0,
         leftEyeOpeningValue,
         rightEyeOpeningValue,
+        lengthEyebrowsToEyes
       ];
 }

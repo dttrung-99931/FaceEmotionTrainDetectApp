@@ -90,21 +90,21 @@ class FaceDetectPainter extends CustomPainter {
   }
 
   void _drawContours(Face face, Canvas canvas) {
-    //   _drawContour(face, canvas, FaceContourType.face);
+    _drawContour(face, canvas, FaceContourType.face);
     _drawContour(face, canvas, FaceContourType.leftEye);
     _drawContour(face, canvas, FaceContourType.rightEye);
-    //   _drawContour(face, canvas, FaceContourType.lowerLipBottom);
-    //   _drawContour(face, canvas, FaceContourType.lowerLipTop);
-    //   _drawContour(face, canvas, FaceContourType.upperLipTop);
-    //   _drawContour(face, canvas, FaceContourType.upperLipBottom);
-    //   _drawContour(face, canvas, FaceContourType.upperLipBottom);
-    //   _drawContour(face, canvas, FaceContourType.noseBridge);
-    //   _drawContour(face, canvas, FaceContourType.noseBottom);
+    // _drawContour(face, canvas, FaceContourType.lowerLipBottom);
+    // _drawContour(face, canvas, FaceContourType.lowerLipTop);
+    // _drawContour(face, canvas, FaceContourType.upperLipTop);
+    // _drawContour(face, canvas, FaceContourType.upperLipBottom);
+    // _drawContour(face, canvas, FaceContourType.upperLipBottom);
+    _drawContour(face, canvas, FaceContourType.noseBridge);
+    _drawContour(face, canvas, FaceContourType.noseBottom);
 
-    //   _drawContour(face, canvas, FaceContourType.leftEyebrowTop);
-    //   _drawContour(face, canvas, FaceContourType.leftEyebrowBottom);
-    //   _drawContour(face, canvas, FaceContourType.rightEyebrowTop);
-    //   _drawContour(face, canvas, FaceContourType.rightEyebrowBottom);
+    _drawContour(face, canvas, FaceContourType.leftEyebrowTop);
+    _drawContour(face, canvas, FaceContourType.leftEyebrowBottom);
+    _drawContour(face, canvas, FaceContourType.rightEyebrowTop);
+    _drawContour(face, canvas, FaceContourType.rightEyebrowBottom);
   }
 
   void _drawContour(Face face, Canvas canvas, FaceContourType contourType) {
@@ -194,6 +194,12 @@ class FaceDetectPainter extends CustomPainter {
     //   text: 'Length from cheek to eye:  ${face.lengthFromCheekToEye.toStringAsFixed(2)}',
     //   position: Offset(8, y += 16),
     // );
+
+    _drawText(
+      canvas: canvas,
+      text: 'Length from eyebrows to eyes:  ${face.lengthFromCheekToEye.toStringAsFixed(2)}',
+      position: Offset(8, y += 16),
+    );
 
     // _drawText(
     //   canvas: canvas,
