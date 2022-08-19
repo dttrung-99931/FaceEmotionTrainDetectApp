@@ -118,7 +118,7 @@ class _TrainFileEditScreenState extends State<TrainFileEditScreen> {
   }
 
   Future<void> _shareFile(String path) async {
-    await ShareExtend.share(path, 'text');
+    await ShareExtend.share(path, 'file');
   }
 }
 

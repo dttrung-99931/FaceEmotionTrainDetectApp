@@ -73,8 +73,9 @@ class FaceEmotionDetector {
 
     /// Detect face emotion by knn classifier
     // int k = 7;
-    int k = (trainDataFrame.rows.length / emotions.length * 0.3).toInt();
-    k = min(max(k, 1), trainDataFrame.rows.length);
+    // int k = (trainDataFrame.rows.length / emotions.length * 0.3).toInt();
+    // k = min(max(k, 1), trainDataFrame.rows.length);
+    int k = 3; // more effective for current train data
     KnnClassifier classifier = KnnClassifier(trainDataFrame, FaceEmotionTrainer.columnFaceEmotion, k);
     var toDetect = DataFrame([emotionFace.faceProperties], headerExists: false);
     DataFrame results = classifier.predict(toDetect);
