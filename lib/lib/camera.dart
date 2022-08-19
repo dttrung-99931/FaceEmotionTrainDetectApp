@@ -26,7 +26,7 @@ class Camera {
   static Stream<bool> get isPausedStream => _isPausedStream.stream;
   static Future<bool> get isPaused => _isPausedStream.stream.last;
 
-  static CameraLensDirection _camDirection = CameraLensDirection.back;
+  static CameraLensDirection _camDirection = CameraLensDirection.front;
 
   static Future<void> setupCamera() async {
     CameraDescription description = await _getCameraByCamDirection(_camDirection);

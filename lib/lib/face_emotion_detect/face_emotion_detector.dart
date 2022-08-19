@@ -53,6 +53,8 @@ class FaceEmotionDetector {
     String trainContent = await trainFile.readAsString();
     DataFrame trainDataFrame = DataFrame.fromRawCsv(trainContent);
 
+    if (trainDataFrame.rows.isEmpty) return 'No train data';
+
     /// Replace emotions column by emotions index column to used Knn algo latter
     List<String> emotions = trainContent
         .split('\n')
