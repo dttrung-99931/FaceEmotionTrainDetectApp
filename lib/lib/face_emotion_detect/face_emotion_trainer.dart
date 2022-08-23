@@ -1,3 +1,4 @@
+import 'dart:developer';
 import 'dart:io';
 
 import 'package:face_form_detect/utils/face_property_extension.dart';
@@ -6,14 +7,42 @@ import 'package:google_mlkit_face_detection/google_mlkit_face_detection.dart';
 import 'package:path_provider/path_provider.dart';
 
 import '../../utils/permission_utils.dart';
+import '../face_detect.dart';
 
 class FaceEmotionTrainer {
   static const String columnFaceEmotion = 'emotionName';
   static const String fileName = 'emotion-face-train-data.csv';
+  static const String trainDataForlder = '/storage/emulated/0/emotion-train-data';
   static const Size standardFaceSize = Size(72, 72);
 
-  static Future<void> train(Face emotionFace, String emotionName) async {
-    await PermissionUtils.ensureStoragePermission();
+  // Train with data from [trainDataForlder]
+  // Rewrite all train file
+  static Future<void> trainFromFile({int imagesNumTrainPerEmotion = 2}) async {
+    Directory trainFolder = Directory(trainDataForlder);
+
+    await for (FileSystemEntity folder in trainFolder.list()) {
+      String emotion = folder.path.split('/').last;
+      Directory emotionImgFolder = Directory(folder.path);
+      int count = 0;
+      await for (FileSystemEntity img in emotionImgFolder.list()) {
+        if (count >= 200) continue;
+
+        List<Face> faces = await FaceDetect.detectFaces(InputImage.fromFile(File(img.path)));
+
+        if (faces.isEmpty) continue;
+
+        count++;
+        await train(faces.first, emotion, checkFilePermission: false);
+        log('Train $emotion $count image');
+      }
+    }
+    log(trainFolder.toString());
+  }
+
+  static Future<void> train(Face emotionFace, String emotionName, {bool checkFilePermission = true}) async {
+    if (checkFilePermission) {
+      await PermissionUtils.ensureStoragePermission();
+    }
 
     File trainFile = await getTrainFile();
     if (!await trainFile.exists()) {
@@ -40,7 +69,7 @@ class FaceEmotionTrainer {
       // 'rightEyeOpenProbability',
       'leftEyeOpeningValue',
       'rightEyeOpeningValue',
-      'lengthEyebrowsToEyes',
+      'lengthFromEyebrowsToNose',
       columnFaceEmotion,
     ].join(',');
   }

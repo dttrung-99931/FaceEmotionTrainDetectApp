@@ -40,7 +40,7 @@ extension FaceProperty on Face {
     return FaceEmotionTrainer.toFaceHeightPercents(lengthFromMouthToNose, boundingBox.size);
   }
 
-  double get lengthEyebrowsToEyes {
+  double get lengthFromEyebrowsToNose {
     FaceContour? leftEyebrowTop = contours[FaceContourType.leftEyebrowTop];
     FaceContour? rightEyebrowTop = contours[FaceContourType.rightEyebrowTop];
     FaceLandmark? nose = landmarks[FaceLandmarkType.noseBase];
@@ -123,6 +123,6 @@ extension FaceProperty on Face {
         // rightEyeOpenProbability ?? 0,
         leftEyeOpeningValue,
         rightEyeOpeningValue,
-        lengthEyebrowsToEyes
+        lengthFromEyebrowsToNose
       ];
 }

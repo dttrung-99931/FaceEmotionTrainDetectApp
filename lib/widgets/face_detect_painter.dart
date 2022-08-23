@@ -32,8 +32,8 @@ class FaceDetectPainter extends CustomPainter {
     drawSize = size;
     for (var face in detectedFaces.faces) {
       _drawBoxWithEmotion(face, canvas);
-      _drawLandmarks(face, canvas);
-      // _drawContours(face, canvas);
+      // _drawLandmarks(face, canvas);
+      _drawContours(face, canvas);
 
       // log(_getFaceAngleInfo(face));
       // _drawHeadInfo(face, canvas);

@@ -21,6 +21,8 @@ class FaceEmotionDetector {
   static const int _milisDelayDetectAgain = 150;
   static DateTime _lastDetectTime = DateTime.now();
 
+  static EmotionKnnClassifier? _classifier;
+
   /// Detect emotion of first face from [facesStream]
   /// Stream detected emotion to [emotionStream]
   static void startDetecting(Stream<DetectedFaces> facesStream) async {
@@ -43,17 +45,36 @@ class FaceEmotionDetector {
     return DateTime.now().millisecondsSinceEpoch - _lastDetectTime.millisecondsSinceEpoch >= _milisDelayDetectAgain;
   }
 
+  static void markReloading() {
+    _classifier = null;
+  }
+
   /// Return detected emotion
   static Future<String> detect(Face emotionFace) async {
-    /// Read emotion train file
+    try {
+      _classifier ??= await _createKnnClassifier();
+    } catch (e) {
+      return e.toString();
+    }
+    var toDetect = DataFrame([emotionFace.faceProperties], headerExists: false);
+    DataFrame results = _classifier!.predict(toDetect);
+
+    /// Return emotion name from detected result
+    int? detectedEmotionIndex = results.rows.isNotEmpty ? results.rows.first.last.toInt() : null;
+    return detectedEmotionIndex != null ? _classifier!.emotions[detectedEmotionIndex] : 'No detected';
+  }
+
+  static Future<EmotionKnnClassifier> _createKnnClassifier() async {
     File trainFile = await FaceEmotionTrainer.getTrainFile();
     if (!await trainFile.exists()) {
-      return 'No train file';
+      throw 'No train file';
     }
     String trainContent = await trainFile.readAsString();
     DataFrame trainDataFrame = DataFrame.fromRawCsv(trainContent);
 
-    if (trainDataFrame.rows.isEmpty) return 'No train data';
+    if (trainDataFrame.rows.isEmpty) {
+      throw 'No train data';
+    }
 
     /// Replace emotions column by emotions index column to used Knn algo latter
     List<String> emotions = trainContent
@@ -75,33 +96,21 @@ class FaceEmotionDetector {
     // int k = 7;
     // int k = (trainDataFrame.rows.length / emotions.length * 0.3).toInt();
     // k = min(max(k, 1), trainDataFrame.rows.length);
-    int k = 3; // more effective for current train data
-    KnnClassifier classifier = KnnClassifier(trainDataFrame, FaceEmotionTrainer.columnFaceEmotion, k);
-    var toDetect = DataFrame([emotionFace.faceProperties], headerExists: false);
-    DataFrame results = classifier.predict(toDetect);
-
-    /// Return emotion name from detected result
-    int? detectedEmotionIndex = results.rows.isNotEmpty ? results.rows.first.last.toInt() : null;
-    return detectedEmotionIndex != null ? emotions[detectedEmotionIndex] : 'No detected';
+    int k = 4; // more effective for current train data
+    return EmotionKnnClassifier(
+      emotions: emotions,
+      classifier: KnnClassifier(trainDataFrame, FaceEmotionTrainer.columnFaceEmotion, k),
+    );
   }
+}
 
-  static Future<void> _correctTrainFile(File trainFile, String trainContent) async {
-    List<String> lines = trainContent.split('\n').where((line) => line.isNotEmpty).toList();
-    if (lines.length < 2) return;
+class EmotionKnnClassifier {
+  final KnnClassifier classifier;
+  final List<String> emotions;
 
-    var columnCount = lines[0].split(',').length;
-    var valueCount = lines[1].split(',').length;
-    bool isDataLineFitHeaderLine = columnCount == valueCount;
-    if (isDataLineFitHeaderLine) return; // train file is corret, no need fixing
+  EmotionKnnClassifier({required this.classifier, this.emotions = const []});
 
-    int valueCountToAdd = columnCount - valueCount;
-    if (valueCountToAdd <= 0) return; // only fix value count != column count, not fix otherwise
-    for (int i = 1; i < lines.length; i++) {
-      int lastCommaIdx = lines[i].lastIndexOf(',');
-      lines[i] += '${',0.00' * valueCountToAdd}\n';
-      lines[i] = lines[i].substring(0, lastCommaIdx) + ',0.00' * valueCountToAdd + lines[i].substring(lastCommaIdx);
-    }
-    String fixed = '${lines.join('\n')}\n';
-    await trainFile.writeAsString(fixed);
+  DataFrame predict(DataFrame toDetect) {
+    return classifier.predict(toDetect);
   }
 }

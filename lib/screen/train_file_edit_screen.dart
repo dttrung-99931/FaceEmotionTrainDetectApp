@@ -9,6 +9,8 @@ import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:share_extend/share_extend.dart';
 
+import '../lib/face_emotion_detect/face_emotion_detector.dart';
+
 class TrainFileEditScreen extends StatefulWidget {
   const TrainFileEditScreen({Key? key}) : super(key: key);
 
@@ -82,6 +84,13 @@ class _TrainFileEditScreenState extends State<TrainFileEditScreen> {
                 ),
               ],
             ),
+            ElevatedButton(
+              style: ElevatedButton.styleFrom(primary: Colors.green[300]),
+              onPressed: () async {
+                FaceEmotionTrainer.trainFromFile();
+              },
+              child: const Text('Train from file'),
+            ),
           ],
         ),
       ),
@@ -152,6 +161,7 @@ class _SaveButtonState extends State<_SaveButton> {
               setState(() {
                 isLoading = false;
               });
+              FaceEmotionDetector.markReloading();
             },
             child: const Text('Save'),
           );
