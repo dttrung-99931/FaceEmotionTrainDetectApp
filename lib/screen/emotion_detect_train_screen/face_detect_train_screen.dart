@@ -119,7 +119,7 @@ class _FaceDetectTrainScreenState extends State<FaceDetectTrainScreen> with Widg
               ),
             ),
             const DefinedEmotionsWidget(),
-            const SizedBox(height: 8),
+            const SizedBox(height: 4),
             Container(
               height: 36,
               width: 128,
@@ -161,11 +161,18 @@ class _CatchImageToTrainButtonState extends State<CatchImageToTrainButton> {
       await Camera.resume();
     } else {
       if (FaceEmotionDefine.hasSelectedEmotion) {
-        await FaceEmotionTrainer.train(
+        bool success = await FaceEmotionTrainer.train(
           FaceDetect.currentDetectedFaces!.faces.first,
           FaceEmotionDefine.currentSelectedEmotion,
         );
-        await Camera.pause();
+        if (success) {
+          await Camera.pause();
+          FaceEmotionDetector.markReloading();
+        } else {
+          await Camera.resume();
+          Fluttertoast.showToast(msg: 'Train failed');
+        }
+        ;
       } else {
         Fluttertoast.showToast(msg: 'No emotion selected');
       }

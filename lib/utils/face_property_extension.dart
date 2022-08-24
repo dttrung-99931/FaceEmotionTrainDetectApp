@@ -116,7 +116,7 @@ extension FaceProperty on Face {
         mouthWidth,
         lengthFromMouthToNose,
         mouthAngle,
-        // (smilingProbability ?? 0) * 100,
+        (smilingProbability ?? 0) * 10,
         cheekWidth,
         lengthFromCheekToEye,
         // leftEyeOpenProbability ?? 0,

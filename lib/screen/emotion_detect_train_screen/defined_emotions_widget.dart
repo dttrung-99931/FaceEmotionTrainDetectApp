@@ -1,4 +1,5 @@
 import 'package:face_form_detect/lib/face_emotion_detect/face_emotion_define.dart';
+import 'package:face_form_detect/lib/face_emotion_detect/face_emotion_detector.dart';
 import 'package:face_form_detect/lib/face_emotion_detect/face_emotion_trainer.dart';
 import 'package:flutter/material.dart';
 
@@ -14,30 +15,31 @@ class DefinedEmotionsWidget extends StatefulWidget {
 class _DefinedEmotionsWidgetState extends State<DefinedEmotionsWidget> {
   @override
   void initState() {
-    FaceEmotionDefine.loadEmotions();
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      height: 32,
+      height: 52,
       child: Row(
         children: [
           Flexible(
-            child: ValueListenableBuilder<List<String>?>(
-              valueListenable: FaceEmotionDefine.currentEmotions,
-              builder: (BuildContext context, List<String>? emotions, Widget? widget) {
-                return emotions != null
-                    ? emotions.isNotEmpty
+            child: StreamBuilder<Map<String, int>?>(
+              stream: FaceEmotionDefine.emotionDatasetCountStream,
+              builder: (BuildContext context, AsyncSnapshot<Map<String, int>?> snapshot) {
+                return snapshot.hasData
+                    ? snapshot.data!.isNotEmpty
                         ? ListView(
                             scrollDirection: Axis.horizontal,
-                            children: emotions
+                            children: snapshot.data!.entries
                                 .map(
-                                  (emotion) => _Emotion(
-                                      emotion: emotion,
+                                  // MapEntry<emotion, dataset count>
+                                  (MapEntry<String, int> entry) => _Emotion(
+                                      emotion: entry.key,
+                                      emotionDataSetCount: entry.value,
                                       onPressed: () {
-                                        FaceEmotionDefine.selectEmotion(emotion);
+                                        FaceEmotionDefine.selectEmotion(entry.key);
                                         setState(() {});
                                       }),
                                 )
@@ -70,8 +72,14 @@ class _DefinedEmotionsWidgetState extends State<DefinedEmotionsWidget> {
 class _Emotion extends StatelessWidget {
   final void Function() onPressed;
   final String emotion;
+  final int emotionDataSetCount;
 
-  const _Emotion({required this.emotion, required this.onPressed, Key? key}) : super(key: key);
+  const _Emotion({
+    required this.emotion,
+    required this.onPressed,
+    required this.emotionDataSetCount,
+    Key? key,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -85,7 +93,15 @@ class _Emotion extends StatelessWidget {
             ),
           ),
           padding: const EdgeInsets.all(8),
-          child: Text(emotion)),
+          child: Column(
+            children: [
+              Text(emotion),
+              Text(
+                emotionDataSetCount.toString(),
+                textAlign: TextAlign.center,
+              ),
+            ],
+          )),
     );
   }
 }

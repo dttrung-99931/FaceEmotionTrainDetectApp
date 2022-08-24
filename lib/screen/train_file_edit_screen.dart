@@ -87,7 +87,8 @@ class _TrainFileEditScreenState extends State<TrainFileEditScreen> {
             ElevatedButton(
               style: ElevatedButton.styleFrom(primary: Colors.green[300]),
               onPressed: () async {
-                FaceEmotionTrainer.trainFromFile();
+                await FaceEmotionTrainer.trainFromFile();
+                FaceEmotionDetector.markReloading();
               },
               child: const Text('Train from file'),
             ),

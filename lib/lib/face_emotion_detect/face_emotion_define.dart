@@ -1,38 +1,24 @@
-import 'dart:io';
-
-import 'package:flutter/foundation.dart';
-
-import 'face_emotion_trainer.dart';
+import 'package:rxdart/rxdart.dart';
 
 class FaceEmotionDefine {
   static String currentSelectedEmotion = '';
   static bool get hasSelectedEmotion => currentSelectedEmotion.isNotEmpty;
 
-  static final ValueNotifier<List<String>?> _currentEmotions = ValueNotifier(null);
-  static ValueListenable<List<String>?> get currentEmotions => _currentEmotions;
-  static Future<void> loadEmotions() async {
-    File trainFile = await FaceEmotionTrainer.getTrainFile();
-    if (!await trainFile.exists()) {
-      _currentEmotions.value = [];
-      return;
-    }
+  static final _emotionDatasetCountStream = BehaviorSubject<Map<String, int>>();
+  // Map<emotion, trained dataset count>
+  static Stream<Map<String, int>> get emotionDatasetCountStream => _emotionDatasetCountStream;
+  static Map<String, int>? _currrentEmotionDatasetCount;
 
-    String trainContent = await trainFile.readAsString();
-    List<String> lines = trainContent.split('\n');
-    _currentEmotions.value = lines
-        .sublist(1)
-        .where((element) => element.isNotEmpty)
-        .map(
-          (String dataLine) => dataLine.split(',').last,
-        )
-        .toSet()
-        .toList();
+  static Future<void> updateEmotionDatasetCount(Map<String, int> motionDatasetCount) async {
+    _emotionDatasetCountStream.add(motionDatasetCount);
+    _currrentEmotionDatasetCount = motionDatasetCount;
   }
 
   static void addEmotion(String emotion) {
-    List<String> emotions = _currentEmotions.value ?? [];
-    emotions.add(emotion);
-    _currentEmotions.value = [...emotions];
+    if (_currrentEmotionDatasetCount != null && !_currrentEmotionDatasetCount!.containsKey(emotion)) {
+      _currrentEmotionDatasetCount![emotion] = 0;
+      _emotionDatasetCountStream.add(_currrentEmotionDatasetCount!);
+    }
   }
 
   static void selectEmotion(String emotion) {

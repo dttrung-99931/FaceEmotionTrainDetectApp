@@ -12,34 +12,44 @@ import '../face_detect.dart';
 class FaceEmotionTrainer {
   static const String columnFaceEmotion = 'emotionName';
   static const String fileName = 'emotion-face-train-data.csv';
-  static const String trainDataForlder = '/storage/emulated/0/emotion-train-data';
+  static const String trainDataForlder = '/storage/emulated/0/emotion-train-data-hd';
   static const Size standardFaceSize = Size(72, 72);
 
   // Train with data from [trainDataForlder]
   // Rewrite all train file
-  static Future<void> trainFromFile({int imagesNumTrainPerEmotion = 2}) async {
+  static Future<void> trainFromFile() async {
     Directory trainFolder = Directory(trainDataForlder);
+
+    File trainFile = await getTrainFile();
+    if (await trainFile.exists()) {
+      await trainFile.delete();
+    }
+
+    int fromImgIndex = 0;
+    int toImgIndex = 100;
+    // int toImgIndex = 399;
 
     await for (FileSystemEntity folder in trainFolder.list()) {
       String emotion = folder.path.split('/').last;
       Directory emotionImgFolder = Directory(folder.path);
-      int count = 0;
+      int index = -1;
       await for (FileSystemEntity img in emotionImgFolder.list()) {
-        if (count >= 200) continue;
+        index++;
+        if (index < fromImgIndex) continue;
+        if (index > toImgIndex) break;
 
         List<Face> faces = await FaceDetect.detectFaces(InputImage.fromFile(File(img.path)));
 
         if (faces.isEmpty) continue;
 
-        count++;
-        await train(faces.first, emotion, checkFilePermission: false);
-        log('Train $emotion $count image');
+        bool success = await train(faces.first, emotion, checkFilePermission: false);
+        log('Train $emotion image index $index ${success.toString()}');
       }
     }
     log(trainFolder.toString());
   }
 
-  static Future<void> train(Face emotionFace, String emotionName, {bool checkFilePermission = true}) async {
+  static Future<bool> train(Face emotionFace, String emotionName, {bool checkFilePermission = true}) async {
     if (checkFilePermission) {
       await PermissionUtils.ensureStoragePermission();
     }
@@ -48,12 +58,17 @@ class FaceEmotionTrainer {
     if (!await trainFile.exists()) {
       await trainFile.writeAsString('${_getEmotionPropertyHeaderCsvLine()}\n');
     }
-    String csvTrainLine = _getEmotionPropertyCsvLine(emotionFace, emotionName);
+    List<double> faceProperties = emotionFace.faceProperties;
+    if (faceProperties.any((element) => element == 0)) {
+      return false;
+    }
+    String csvTrainLine = _getEmotionPropertyCsvLine(faceProperties, emotionName);
     await trainFile.writeAsString('$csvTrainLine\n', mode: FileMode.writeOnlyAppend);
+    return true;
   }
 
-  static String _getEmotionPropertyCsvLine(Face emotionFace, String emotionName) {
-    return [...emotionFace.faceProperties.map((e) => e.toStringAsFixed(2)), emotionName].join(',');
+  static String _getEmotionPropertyCsvLine(List<double> faceProperties, String emotionName) {
+    return [...faceProperties.map((e) => e.toStringAsFixed(2)), emotionName].join(',');
   }
 
   static String _getEmotionPropertyHeaderCsvLine() {
@@ -62,7 +77,7 @@ class FaceEmotionTrainer {
       'mouthWidth',
       'lengthFromMouthToNose',
       'mouthAngle',
-      // 'smilingProbability',
+      'smilingProbability',
       'cheekWidth',
       'lengthFromCheekToEye',
       // 'leftEyeOpenProbability',
