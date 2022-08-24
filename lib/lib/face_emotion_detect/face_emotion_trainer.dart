@@ -12,7 +12,7 @@ import '../face_detect.dart';
 class FaceEmotionTrainer {
   static const String columnFaceEmotion = 'emotionName';
   static const String fileName = 'emotion-face-train-data.csv';
-  static const String trainDataForlder = '/storage/emulated/0/emotion-train-data-hd';
+  static const String trainDataForlder = '/storage/emulated/0/emotion-train-data-d-kid';
   static const Size standardFaceSize = Size(72, 72);
 
   // Train with data from [trainDataForlder]
