@@ -5,6 +5,7 @@ import 'package:face_form_detect/lib/face_emotion_detect/face_emotion_define.dar
 import 'package:face_form_detect/lib/face_emotion_detect/face_emotion_trainer.dart';
 import 'package:face_form_detect/model/detected_face.dart';
 import 'package:face_form_detect/utils/face_property_extension.dart';
+import 'package:flutter/services.dart';
 import 'package:google_mlkit_face_detection/google_mlkit_face_detection.dart';
 
 import 'package:ml_dataframe/ml_dataframe.dart';
@@ -77,7 +78,7 @@ class FaceEmotionDetector {
   static Future<EmotionKnnClassifier> _createKnnClassifier() async {
     File trainFile = await FaceEmotionTrainer.getTrainFile();
     if (!await trainFile.exists()) {
-      throw 'No train file';
+      await _writeDefaultTrainContent(trainFile);
     }
     String trainContent = await trainFile.readAsString();
     List<String> trainDatasetLines = trainContent
@@ -104,6 +105,11 @@ class FaceEmotionDetector {
       emotionDatasetCountMap: emotionDasetCountMap,
       classcifierAlgo: ClasscifierAlgo.knn,
     );
+  }
+
+  static Future<void> _writeDefaultTrainContent(File trainFile) async {
+    String trainContent = await rootBundle.loadString('assets/emotion-face-train-data.csv');
+    await trainFile.writeAsString(trainContent);
   }
 
   /// Return map<emotion, csv dataset line count>
