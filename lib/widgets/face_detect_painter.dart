@@ -55,7 +55,7 @@ class FaceDetectPainter extends CustomPainter {
     );
     _drawText(
       canvas: canvas,
-      text: FaceEmotionDetector.currentEmotion.upperCaseFirstChar(),
+      text: FaceEmotionDetector.currentDetectedEmotion.upperCaseFirstChar(),
       position: emotionPos,
       color: Colors.green,
       fontWeight: FontWeight.normal,
