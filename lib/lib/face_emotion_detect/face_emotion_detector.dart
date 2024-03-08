@@ -60,9 +60,23 @@ class FaceEmotionDetector {
     var toDetect = DataFrame([emotionFace.faceProperties], headerExists: false);
     DataFrame detects = _classifier!.predict(toDetect);
 
-    /// Return emotion name from detected dataframe result
-    int? detectedEmotionIndex = detects.rows.isNotEmpty ? detects.rows.first.last.toInt() : null;
-    return detectedEmotionIndex != null ? _classifier!.emotions[detectedEmotionIndex] : 'No detected';
+    /// Determine prediteced emotion from [detects]
+
+    if (detects.rows.isEmpty) {
+      return 'No detected';
+    }
+    // Map<emotion index, accurance time>
+    Map<int, int> mostAccurance = {};
+    for (var element in detects.rows) {
+      int emoIndex = element.last.toInt();
+      mostAccurance[emoIndex] = mostAccurance.containsKey(emoIndex) ? mostAccurance[emoIndex]! + 1 : 0;
+    }
+    MapEntry<int, int> mostEntry = mostAccurance.entries.fold(
+      mostAccurance.entries.first,
+      (MapEntry<int, int> mostEntry, entry) => mostEntry.value > entry.value ? mostEntry : entry,
+    );
+    int? predictedEmotionIndex = mostEntry.key;
+    return _classifier!.emotions[predictedEmotionIndex];
   }
 
   static Future<String> setupClassifier() async {
